@@ -3,45 +3,507 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SATCORPG5</title>
+  <title>SATCORP</title>
+  <meta name="description" content="SATCORP — Systems that convert." />
   <style>
-    body {
-      font-family: system-ui, Arial, sans-serif;
-      background: #f9fafb;
-      margin: 0;
-      padding: 48px;
+    :root{
+      --bg:#07070a;
+      --panel:#0c0d12;
+      --panel2:#0a0b10;
+      --text:#eef0f6;
+      --muted:#a9afc2;
+      --line:rgba(155,93,229,.22);
+      --line2:rgba(255,255,255,.08);
+      --violet:#9b5de5; /* Plasma Violet */
+      --violet2:rgba(155,93,229,.35);
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --radius: 18px;
+      --max: 1120px;
     }
-    .container {
-      max-width: 720px;
-      margin: auto;
-      background: white;
-      padding: 32px;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 700px at 20% 15%, rgba(155,93,229,.22), transparent 60%),
+        radial-gradient(900px 520px at 80% 25%, rgba(155,93,229,.14), transparent 55%),
+        radial-gradient(900px 520px at 55% 90%, rgba(155,93,229,.10), transparent 60%),
+        linear-gradient(180deg, #06060a, #050509 55%, #040408);
+      overflow-x:hidden;
     }
-    h1 {
-      margin-top: 0;
+
+    /* subtle “system” noise + scanline */
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,.03), transparent 18%, rgba(255,255,255,.02) 38%, transparent 60%),
+        repeating-linear-gradient(to bottom, rgba(255,255,255,.035) 0px, rgba(255,255,255,.035) 1px, transparent 2px, transparent 6px);
+      opacity:.08;
+      mix-blend-mode:overlay;
+      z-index:0;
     }
-    p {
-      color: #374151;
+
+    a{ color:inherit; text-decoration:none; }
+    .wrap{ position:relative; z-index:1; }
+    .container{ max-width:var(--max); margin:0 auto; padding: 18px 18px 72px; }
+
+    /* Top bar */
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px;
+      padding: 18px 0;
     }
-    .tag {
-      display: inline-block;
-      background: #e0e7ff;
-      color: #3730a3;
-      padding: 6px 12px;
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      letter-spacing:.12em;
+      font-weight:800;
+    }
+    .brand .mark{
+      width:36px; height:36px; border-radius:12px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 60%),
+                  linear-gradient(135deg, rgba(155,93,229,.95), rgba(155,93,229,.25));
+      box-shadow: 0 0 0 1px rgba(155,93,229,.35), 0 18px 50px rgba(155,93,229,.18);
+      position:relative;
+      overflow:hidden;
+    }
+    .brand .mark::after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: conic-gradient(from 180deg, rgba(255,255,255,.0), rgba(255,255,255,.25), rgba(255,255,255,.0));
+      animation: spin 7s linear infinite;
+      opacity:.35;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .nav{
+      display:flex; align-items:center; gap:14px;
+      padding: 10px 12px;
+      background: linear-gradient(180deg, rgba(12,13,18,.7), rgba(10,11,16,.55));
+      border: 1px solid var(--line2);
       border-radius: 999px;
+      backdrop-filter: blur(10px);
+    }
+    .nav a{
+      color: var(--muted);
+      font-weight:600;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: .18s ease;
+      letter-spacing:.02em;
+    }
+    .nav a:hover{
+      color: var(--text);
+      border-color: var(--line);
+      box-shadow: 0 0 0 3px rgba(155,93,229,.08);
+    }
+
+    /* Hero */
+    .hero{
+      margin-top: 14px;
+      padding: 34px;
+      border-radius: var(--radius);
+      background:
+        radial-gradient(900px 420px at 20% 20%, rgba(155,93,229,.18), transparent 55%),
+        radial-gradient(900px 420px at 80% 10%, rgba(155,93,229,.10), transparent 55%),
+        linear-gradient(180deg, rgba(12,13,18,.78), rgba(10,11,16,.65));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::after{
+      content:"";
+      position:absolute; inset:-2px;
+      border-radius: var(--radius);
+      pointer-events:none;
+      box-shadow: inset 0 0 0 1px rgba(155,93,229,.18);
+      opacity:.9;
+    }
+
+    .kicker{
+      display:inline-flex; align-items:center; gap:10px;
+      color: var(--muted);
+      font-weight:700;
+      font-size:12px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:999px;
+      background: var(--violet);
+      box-shadow: 0 0 0 4px rgba(155,93,229,.14), 0 0 30px rgba(155,93,229,.40);
+    }
+
+    h1{
+      margin: 14px 0 10px;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+    }
+    .sub{
+      max-width: 68ch;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 0 0 20px;
+    }
+
+    .actions{ display:flex; gap:12px; flex-wrap:wrap; }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-weight:800;
+      font-size: 13px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      border: 1px solid transparent;
+      transition: .18s ease;
+      user-select:none;
+    }
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(155,93,229,1), rgba(155,93,229,.78));
+      color: #0b0b10;
+      box-shadow: 0 18px 60px rgba(155,93,229,.22);
+    }
+    .btn.primary:hover{ transform: translateY(-1px); box-shadow: 0 22px 80px rgba(155,93,229,.28); }
+    .btn.ghost{
+      background: rgba(0,0,0,.12);
+      border-color: rgba(155,93,229,.35);
+      color: var(--text);
+    }
+    .btn.ghost:hover{ border-color: rgba(155,93,229,.60); box-shadow: 0 0 0 3px rgba(155,93,229,.10); }
+
+    /* Section framing */
+    .section{
+      margin-top: 18px;
+      padding: 22px;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(12,13,18,.62), rgba(10,11,16,.52));
+      border: 1px solid rgba(255,255,255,.07);
+      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+    }
+    .section-head{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap:16px; flex-wrap:wrap;
+      margin-bottom: 14px;
+    }
+    .section h2{
+      margin:0;
+      font-size: 16px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+    .section p.lead{
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Card grids */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+    }
+    .card{
+      grid-column: span 4;
+      padding: 16px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(10,11,16,.85), rgba(8,9,14,.78));
+      border: 1px solid rgba(155,93,229,.20);
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:-1px;
+      background: radial-gradient(420px 220px at 10% 10%, rgba(155,93,229,.14), transparent 60%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .card > *{ position:relative; }
+    .card h3{
+      margin: 0 0 6px;
+      font-size: 14px;
+      letter-spacing:.02em;
+    }
+    .card p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight:800;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color: rgba(238,240,246,.9);
+      border: 1px solid rgba(255,255,255,.09);
+      background: rgba(0,0,0,.18);
+      margin-bottom: 10px;
+    }
+
+    /* Portfolio cards */
+    .work{ grid-column: span 6; min-height: 132px; }
+    .meta{
+      display:flex; gap:8px; flex-wrap:wrap;
+      margin-top: 10px;
+      color: rgba(238,240,246,.82);
       font-size: 12px;
-      font-weight: 600;
+    }
+    .tag{
+      border: 1px solid rgba(155,93,229,.25);
+      background: rgba(155,93,229,.10);
+      padding: 5px 10px;
+      border-radius: 999px;
+    }
+
+    /* About + Contact layout */
+    .two-col{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 12px;
+    }
+    .box{
+      padding: 18px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(10,11,16,.85), rgba(8,9,14,.78));
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .box h3{ margin: 0 0 8px; font-size: 14px; letter-spacing:.08em; text-transform:uppercase; }
+    .box p{ margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .contact-row{
+      display:flex; align-items:center; justify-content:space-between;
+      gap: 12px; flex-wrap:wrap;
+      margin-top: 12px;
+    }
+    .link{
+      color: rgba(238,240,246,.92);
+      border-bottom: 1px dashed rgba(155,93,229,.45);
+      padding-bottom: 2px;
+    }
+    .footer{
+      margin-top: 18px;
+      display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      color: rgba(169,175,194,.85);
+      font-size: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .card{ grid-column: span 6; }
+      .two-col{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px){
+      .container{ padding: 14px 14px 60px; }
+      .hero{ padding: 22px; }
+      .card, .work{ grid-column: span 12; }
+      .nav{ width:100%; justify-content:space-between; }
+      .topbar{ flex-direction:column; align-items:stretch; }
+      .brand{ justify-content:center; }
     }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <span class="tag">Live on GitHub Pages ✅</span>
-    <h1>Welcome to SATCORPG5</h1>
-    <p>Your website is now running for free using GitHub Pages.</p>
-    <p>Next, we’ll turn this into a full professional website.</p>
+  <div class="wrap">
+    <div class="container">
+
+      <!-- 1) Top bar -->
+      <header class="topbar">
+        <div class="brand" aria-label="SATCORP">
+          <div class="mark" aria-hidden="true"></div>
+          <div>SATCORP</div>
+        </div>
+
+        <nav class="nav" aria-label="Primary">
+          <a href="#services">Services</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </header>
+
+      <!-- 2) Hero -->
+      <section class="hero" id="top">
+        <div class="kicker"><span class="dot" aria-hidden="true"></span> SATCORP // SYSTEMS THAT CONVERT</div>
+        <h1>Build fast. Launch clean. Convert more.</h1>
+        <p class="sub">
+          SATCORP designs and deploys modern web experiences — engineered for speed, clarity, and measurable results.
+          Minimal fluff. Maximum execution.
+        </p>
+        <div class="actions">
+          <a class="btn primary" href="#portfolio">View Work</a>
+          <a class="btn ghost" href="#contact">Contact</a>
+        </div>
+      </section>
+
+      <!-- 3) Service Modules -->
+      <section class="section" id="services">
+        <div class="section-head">
+          <div>
+            <h2>Service Modules</h2>
+            <p class="lead">Choose your deployment package. Stack them as needed.</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <div class="pill">Module 01</div>
+            <h3>Landing Pages</h3>
+            <p>High-conversion pages with clear messaging, tight layout, and fast load times.</p>
+          </div>
+
+          <div class="card">
+            <div class="pill">Module 02</div>
+            <h3>Business Websites</h3>
+            <p>Professional multi-section sites that build trust and drive inquiries.</p>
+          </div>
+
+          <div class="card">
+            <div class="pill">Module 03</div>
+            <h3>Performance Optimization</h3>
+            <p>Speed, accessibility, and SEO improvements that lift real-world results.</p>
+          </div>
+
+          <div class="card">
+            <div class="pill">Module 04</div>
+            <h3>UI Systems</h3>
+            <p>Reusable components and consistent styling for clean, scalable updates.</p>
+          </div>
+
+          <div class="card">
+            <div class="pill">Module 05</div>
+            <h3>Content + Copy</h3>
+            <p>Simple, confident wording that explains value and moves people to act.</p>
+          </div>
+
+          <div class="card">
+            <div class="pill">Module 06</div>
+            <h3>Deploy + Maintain</h3>
+            <p>GitHub Pages deployments, domain setup, and ongoing updates when needed.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4) Recent Deployments -->
+      <section class="section" id="portfolio">
+        <div class="section-head">
+          <div>
+            <h2>Recent Deployments</h2>
+            <p class="lead">Swap these placeholders with your real projects as you add them.</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card work">
+            <div class="pill">Deployment</div>
+            <h3>Project Name Alpha</h3>
+            <p>Short description of the build, what it solved, and what improved.</p>
+            <div class="meta">
+              <span class="tag">Landing</span>
+              <span class="tag">Speed</span>
+              <span class="tag">SEO</span>
+            </div>
+          </div>
+
+          <div class="card work">
+            <div class="pill">Deployment</div>
+            <h3>Project Name Beta</h3>
+            <p>Short description of the build, what it solved, and what improved.</p>
+            <div class="meta">
+              <span class="tag">Brand</span>
+              <span class="tag">UI</span>
+              <span class="tag">Conversion</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5) Mission Brief -->
+      <section class="section" id="about">
+        <div class="section-head">
+          <div>
+            <h2>Mission Brief</h2>
+            <p class="lead">A clear statement of what SATCORP does and why it works.</p>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="box">
+            <h3>Objective</h3>
+            <p>
+              SATCORP builds modern web systems that look sharp, load fast, and guide visitors toward action.
+              The focus is practical: clear structure, strong messaging, and a clean deployment pipeline.
+            </p>
+          </div>
+          <div class="box">
+            <h3>Operating Principles</h3>
+            <p>
+              Speed-first builds • Simple navigation • Strong hierarchy • Accessible UI • Measurable outcomes
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6) Contact -->
+      <section class="section" id="contact">
+        <div class="section-head">
+          <div>
+            <h2>Contact</h2>
+            <p class="lead">Drop a message and we’ll respond with next steps.</p>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="box">
+            <h3>Direct</h3>
+            <p>
+              Email: <a class="link" href="mailto:contact@satcorp.com">contact@satcorp.com</a>
+              <br><span style="color:rgba(169,175,194,.75)">(replace with your real email)</span>
+            </p>
+            <div class="contact-row">
+              <a class="btn primary" href="mailto:contact@satcorp.com">Email SATCORP</a>
+              <a class="btn ghost" href="#top">Back to Top</a>
+            </div>
+          </div>
+
+          <div class="box">
+            <h3>Social</h3>
+            <p>
+              Add links when ready:
+              <br>• <a class="link" href="#" onclick="return false;">LinkedIn</a>
+              <br>• <a class="link" href="#" onclick="return false;">GitHub</a>
+              <br>• <a class="link" href="#" onclick="return false;">X / Twitter</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>© <span id="year"></span> SATCORP</div>
+          <div>SATCORP Theme • Plasma Violet</div>
+        </div>
+      </section>
+
+    </div>
   </div>
+
+  <script>
+    // tiny enhancement: current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
