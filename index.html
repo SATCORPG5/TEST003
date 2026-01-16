@@ -94,13 +94,48 @@
       justify-content:space-between;
       gap: 12px;
       color: var(--muted);
+      min-height: 52px;
     }
+    .top b{ color:var(--text); font-weight:900; }
 
     .bootbar{
       padding: 10px clamp(14px, 2vw, 22px) 12px;
       border-bottom: 1px solid rgba(37,243,255,.14);
       display:flex;
+      align-items:center;
       gap: 12px;
+      background: linear-gradient(90deg, rgba(37,243,255,.06), transparent 45%, rgba(194,91,255,.06));
+    }
+
+    .bootlabel{
+      font-family: var(--mono);
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-size: 10px;
+      color: rgba(183,183,214,.92);
+    }
+
+    .track{
+      flex:1;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(37,243,255,.18);
+      overflow:hidden;
+    }
+
+    .fill{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(37,243,255,.95), rgba(37,243,255,.70));
+      transition: width 80ms linear;
+    }
+
+    .pct{
+      font-family: var(--mono);
+      font-size: 10px;
+      min-width: 56px;
+      text-align:right;
     }
 
     .grid{
@@ -111,6 +146,7 @@
       flex:1;
       opacity:0;
       transform: translateY(8px);
+      transition: opacity 240ms ease, transform 240ms ease;
       pointer-events:none;
     }
 
@@ -120,48 +156,52 @@
       pointer-events:auto;
     }
 
+    .panel, .box{
+      min-height: clamp(360px, 48vh, 560px);
+    }
+
     .panel{
-      border:1.5px solid var(--line);
+      border: 1.5px solid var(--line);
       border-radius: var(--r);
       background: rgba(0,0,0,.22);
-      padding: 26px;
+      padding: clamp(18px, 2.2vw, 26px);
       display:flex;
       flex-direction:column;
-      gap:14px;
+      gap: 14px;
     }
 
     .box{
-      border:1.5px solid var(--line);
+      border: 1.5px solid var(--line);
       border-radius: var(--r);
       background: rgba(0,0,0,.22);
       display:flex;
       flex-direction:column;
-      overflow:hidden;
     }
 
     .boxhead{
       padding: 16px;
-      border-bottom:1px solid var(--line);
+      border-bottom: 1px solid var(--line);
       font-family: var(--mono);
       letter-spacing:.18em;
-      font-size:11px;
+      text-transform:uppercase;
+      font-size: 11px;
       display:flex;
       justify-content:space-between;
     }
 
     .log{
-      padding: 22px;
+      padding: 20px;
       font-family: var(--mono);
-      font-size: var(--log);
+      line-height: 1.85;
       flex:1;
       white-space:pre-wrap;
     }
 
     .actions{
-      padding:22px;
+      padding: 20px;
       display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
     }
 
     .actions.locked .btn{
@@ -170,12 +210,13 @@
     }
 
     .btn{
-      padding:18px;
-      border-radius:16px;
-      border:1.5px solid var(--line);
+      padding: 16px;
+      border-radius: 16px;
+      border: 1.5px solid var(--line);
       background: rgba(0,0,0,.24);
       font-family: var(--mono);
       letter-spacing:.18em;
+      text-transform:uppercase;
       font-size: var(--btn);
       font-weight:900;
       color: var(--text);
@@ -186,12 +227,6 @@
       gap:6px;
     }
 
-    .btn-sub{
-      font-size:9px;
-      letter-spacing:.22em;
-      opacity:.75;
-    }
-
     .btn.primary{
       background: linear-gradient(180deg, rgba(37,243,255,.14), rgba(194,91,255,.12));
     }
@@ -200,92 +235,89 @@
       border-color: rgba(255,106,42,.55);
       background: rgba(255,106,42,.14);
     }
+
+    .subbtn{
+      font-size:9px;
+      letter-spacing:.22em;
+      opacity:.65;
+    }
   </style>
 </head>
 
 <body>
-  <div class="fx-grid"></div>
+<div class="fx-grid"></div>
 
-  <main class="hud" id="kyrwrap">
-    <section class="frame">
-      <header class="top">
-        <span><b id="welcomeText"></b></span>
-        <span>STΛTUS: <b id="kyrStatus">BOOT</b></span>
-      </header>
+<main class="hud" id="kyrwrap">
+<section class="frame">
 
-      <div class="bootbar">
-        <div class="bootlabel">BOOT SEQUENCE</div>
-        <div class="track"><div class="fill" id="bootFill"></div></div>
-        <div class="pct" id="bootPct">0%</div>
-      </div>
+<header class="top">
+  <span><b id="welcomeText"></b></span>
+  <span>STΛTUS: <b id="kyrStatus">BOOT</b></span>
+</header>
 
-      <div class="grid" id="mainGrid">
-        <div class="panel">
-          <h1 class="title">SΛTCORP</h1>
-        </div>
+<div class="bootbar">
+  <div class="bootlabel">BOOT SEQUENCE</div>
+  <div class="track"><div class="fill" id="bootFill"></div></div>
+  <div class="pct" id="bootPct">0%</div>
+</div>
 
-        <div class="box">
-          <div class="boxhead">
-            <span>SYSTΞM TRΛNSMISSION</span>
-            <span id="kyrMsg">BOOTING</span>
-          </div>
+<div class="grid" id="mainGrid">
 
-          <div class="log" id="kyrLog"></div>
+<div class="box">
+  <div class="boxhead">
+    <span>SYSTΞM TRΛNSMISSION</span>
+    <span id="kyrMsg">BOOTING</span>
+  </div>
 
-          <div class="actions locked" id="actions">
-            <button class="btn" data-act="login">
-              AUTHENTICATE
-              <span class="btn-sub">SIGN IN</span>
-            </button>
+  <div class="log" id="kyrLog"></div>
 
-            <button class="btn" data-act="signup">
-              NΞW OPΞRΛTOR
-              <span class="btn-sub">SIGN UP</span>
-            </button>
+  <div class="actions locked" id="actions">
 
-            <button class="btn primary" data-act="guest">
-              SIMULATION MODE
-              <span class="btn-sub">JOIN AS GUEST</span>
-            </button>
+    <button class="btn" data-act="login">
+      AUTHENTICATE
+      <span class="subbtn">SIGN IN</span>
+    </button>
 
-            <button class="btn alert" data-act="pulse">
-              PULSΞ
-              <span class="btn-sub">LIVE SENTIENT RADIO</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+    <button class="btn" data-act="signup">
+      NΞW OPΞRΛTOR
+      <span class="subbtn">SIGN UP</span>
+    </button>
 
-  <script>
-    const welcomeTextEl = document.getElementById("welcomeText");
-    const mainGrid = document.getElementById("mainGrid");
-    const kyrStatus = document.getElementById("kyrStatus");
-    const kyrMsg = document.getElementById("kyrMsg");
-    const kyrLog = document.getElementById("kyrLog");
-    const actions = document.getElementById("actions");
+    <button class="btn primary" data-act="guest">
+      SIMULATION MODE
+      <span class="subbtn">JOIN AS GUEST</span>
+    </button>
 
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    <button class="btn alert" data-act="pulse">
+      PULSΞ
+      <span class="subbtn">LIVE SENTIENT RADIO</span>
+    </button>
 
-    async function typeText(el, text, speed){
-      for (const c of text){
-        el.textContent += c;
-        await sleep(speed);
-      }
-    }
+  </div>
+</div>
 
-    async function boot(){
-      await sleep(800);
-      await typeText(welcomeTextEl,"WΞLCOMΞ TO SΛTCORP",55);
+</div>
+</section>
+</main>
+
+<script>
+  const bootFill = document.getElementById("bootFill");
+  const bootPct = document.getElementById("bootPct");
+  const mainGrid = document.getElementById("mainGrid");
+  const actions = document.getElementById("actions");
+
+  let p = 0;
+  const i = setInterval(()=>{
+    p+=2;
+    bootFill.style.width = p+"%";
+    bootPct.textContent = p+"%";
+    if(p>=100){
+      clearInterval(i);
       mainGrid.classList.add("show");
-      kyrLog.textContent = "[KYRAX] Uplink negotiation… STABLE\n[KYRAX] Standing by...";
-      kyrStatus.textContent = "STΛNDBY";
-      kyrMsg.textContent = "IDLΞ";
       actions.classList.remove("locked");
     }
+  },30);
+</script>
 
-    boot();
-  </script>
 </body>
 </html>
