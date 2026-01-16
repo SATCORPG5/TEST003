@@ -25,7 +25,6 @@
       --r: 18px;
       --max: 1500px;
 
-      /* Responsive console scale */
       --padOuter: clamp(16px, 3vw, 36px);
       --padInner: clamp(16px, 2.4vw, 30px);
       --gap: clamp(14px, 2vw, 26px);
@@ -63,7 +62,6 @@
       mix-blend-mode: overlay;
     }
 
-    /* ===== ONBOARDING HUD ===== */
     .hud{
       min-height:100vh;
       display:grid;
@@ -96,394 +94,111 @@
       justify-content:space-between;
       gap: 12px;
       color: var(--muted);
-      min-height: 52px;
     }
-    .top b{ color:var(--text); font-weight:900; }
 
-    /* Boot progress bar row */
     .bootbar{
       padding: 10px clamp(14px, 2vw, 22px) 12px;
       border-bottom: 1px solid rgba(37,243,255,.14);
       display:flex;
-      align-items:center;
       gap: 12px;
-      background: linear-gradient(90deg, rgba(37,243,255,.06), transparent 45%, rgba(194,91,255,.06));
-    }
-    .bootlabel{
-      font-family: var(--mono);
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      font-size: 10px;
-      color: rgba(183,183,214,.92);
-      white-space:nowrap;
-    }
-    .track{
-      flex:1;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.22);
-      border: 1px solid rgba(37,243,255,.18);
-      overflow:hidden;
-      box-shadow: inset 0 0 0 1px rgba(194,91,255,.08);
-    }
-    .fill{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(37,243,255,.95), rgba(37,243,255,.70));
-      box-shadow: 0 0 18px rgba(37,243,255,.22);
-      transition: width 80ms linear;
-    }
-    .pct{
-      font-family: var(--mono);
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      font-size: 10px;
-      color: rgba(242,242,255,.95);
-      min-width: 56px;
-      text-align:right;
-      white-space:nowrap;
     }
 
-    /* Main grid (hidden until bootbar completes) */
     .grid{
       padding: var(--padInner);
       display:grid;
       grid-template-columns: 1.15fr .85fr;
       gap: var(--gap);
       flex:1;
-      align-items:stretch;
       opacity:0;
       transform: translateY(8px);
-      transition: opacity 240ms ease, transform 240ms ease;
       pointer-events:none;
     }
+
     .grid.show{
       opacity:1;
-      transform: translateY(0);
+      transform:none;
       pointer-events:auto;
     }
 
-    @media(max-width: 1100px){
-      .grid{ grid-template-columns:1fr; }
-      .frame{ min-height: 0; }
-    }
-
-    .panel, .box{
-      height:100%;
-      min-height: clamp(360px, 48vh, 560px);
-    }
-
     .panel{
-      border: 1.5px solid var(--line);
+      border:1.5px solid var(--line);
       border-radius: var(--r);
       background: rgba(0,0,0,.22);
-      padding: clamp(18px, 2.2vw, 26px);
+      padding: 26px;
       display:flex;
       flex-direction:column;
-      justify-content:flex-start;
-      gap: 14px;
-    }
-
-    .idRow{
-      display:flex;
-      gap: clamp(14px, 1.8vw, 20px);
-      align-items:center;
-    }
-
-    .logo{
-      width: clamp(84px, 6vw, 104px);
-      height: clamp(84px, 6vw, 104px);
-      border-radius: 22px;
-      background: rgba(0,0,0,.30);
-      border: 1.5px solid var(--line);
-      display:grid;
-      place-items:center;
-      overflow:hidden;
-      flex: 0 0 auto;
-    }
-    .logo img{
-      width:90%;
-      height:90%;
-      object-fit:contain;
-      filter: drop-shadow(0 0 16px rgba(37,243,255,.35));
-    }
-
-    .title{
-      margin:0;
-      font-weight:900;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      font-size: var(--title);
-      background: linear-gradient(90deg, var(--cyan), var(--violet2));
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-      line-height: 1.02;
-    }
-
-    .subtitle{
-      font-family: var(--mono);
-      font-size: var(--sub);
-      letter-spacing:.14em;
-      color: var(--muted);
-      margin-top: 10px;
-      line-height: 1.7;
-      text-transform: none;
-    }
-
-    .statusGrid{
-      margin-top: 8px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      flex:1;
-      align-content:start;
-    }
-    @media(max-width: 520px){
-      .statusGrid{ grid-template-columns: 1fr; }
-    }
-    .statusCard{
-      border: 1px solid rgba(37,243,255,.18);
-      border-radius: 16px;
-      background: rgba(0,0,0,.18);
-      padding: 12px 12px 13px;
-      font-family: var(--mono);
-      font-size: 12px;
-      line-height: 1.6;
-      color: rgba(183,183,214,.92);
-    }
-    .statusCard .k{
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      font-size: 10px;
-      color: rgba(183,183,214,.78);
-      margin-bottom: 6px;
-    }
-    .statusCard .v{
-      letter-spacing:.08em;
-      color: rgba(242,242,255,.92);
+      gap:14px;
     }
 
     .box{
-      border: 1.5px solid var(--line);
+      border:1.5px solid var(--line);
       border-radius: var(--r);
       background: rgba(0,0,0,.22);
-      overflow:hidden;
       display:flex;
       flex-direction:column;
+      overflow:hidden;
     }
 
     .boxhead{
-      padding: clamp(12px, 1.7vw, 16px);
-      border-bottom: 1px solid var(--line);
+      padding: 16px;
+      border-bottom:1px solid var(--line);
       font-family: var(--mono);
       letter-spacing:.18em;
-      text-transform:uppercase;
-      font-size: 11px;
+      font-size:11px;
       display:flex;
-      align-items:center;
       justify-content:space-between;
-      gap: 10px;
-      color: var(--muted);
     }
 
     .log{
-      padding: clamp(16px, 2vw, 22px);
+      padding: 22px;
       font-family: var(--mono);
       font-size: var(--log);
-      line-height: 1.85;
-      white-space:pre-wrap;
       flex:1;
-      min-height: 220px;
+      white-space:pre-wrap;
     }
 
     .actions{
-      padding: clamp(16px, 2vw, 22px);
+      padding:22px;
       display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-    @media(max-width: 520px){
-      .actions{ grid-template-columns: 1fr; }
-    }
-
-    .btn{
-      padding: clamp(14px, 1.6vw, 18px);
-      border-radius: 16px;
-      border: 1.5px solid var(--line);
-      background: rgba(0,0,0,.24);
-      font-family: var(--mono);
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      font-size: var(--btn);
-      font-weight:900;
-      color: var(--text);
-      cursor:pointer;
-      transition: transform 140ms linear, opacity 140ms linear, border-color 140ms linear;
-    }
-    .btn:hover{
-      transform: translateY(-1px);
-      border-color: rgba(37,243,255,.44);
-    }
-
-    .btn.primary{
-      background: linear-gradient(180deg, rgba(37,243,255,.14), rgba(194,91,255,.12));
-    }
-    .btn.alert{
-      border-color: rgba(255,106,42,.55);
-      background: rgba(255,106,42,.14);
+      grid-template-columns:1fr 1fr;
+      gap:14px;
     }
 
     .actions.locked .btn{
       opacity:.35;
       pointer-events:none;
-      transform:none;
     }
 
-    /* ===== MISSION SELECT SHELL ===== */
-    .site{
-      display:none;
-      min-height:100vh;
-      padding: var(--padOuter);
-      max-width: var(--max);
-      margin: 0 auto;
-    }
-    .site.on{ display:block; }
-
-    .shell{
-      border: 1.5px solid rgba(37,243,255,.22);
-      border-radius: var(--r);
-      background: linear-gradient(180deg, rgba(14,16,36,.88), rgba(8,9,20,.80));
-      box-shadow: 0 40px 140px rgba(0,0,0,.72);
-      overflow:hidden;
-    }
-
-    .shellTop{
-      padding: clamp(12px, 1.6vw, 18px) clamp(14px, 2vw, 22px);
-      border-bottom: 1px solid rgba(37,243,255,.18);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap: 12px;
+    .btn{
+      padding:18px;
+      border-radius:16px;
+      border:1.5px solid var(--line);
+      background: rgba(0,0,0,.24);
       font-family: var(--mono);
       letter-spacing:.18em;
-      text-transform:uppercase;
-      font-size: 11px;
-      color: rgba(183,183,214,.92);
-    }
-    .shellTop .brand{
-      background: linear-gradient(90deg, rgba(37,243,255,.95), rgba(194,91,255,.85));
-      -webkit-background-clip:text;
-      background-clip:text;
-      color: transparent;
-      font-weight: 900;
-    }
-
-    .shellBody{
-      padding: var(--padInner);
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap: var(--gap);
-    }
-    @media(max-width: 1100px){
-      .shellBody{ grid-template-columns: 1fr; }
-    }
-
-    .block{
-      border: 1px solid rgba(37,243,255,.16);
-      border-radius: 18px;
-      background: rgba(0,0,0,.18);
-      padding: 16px;
-    }
-    .block h2{
-      margin:0 0 10px;
-      font-family: var(--mono);
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      font-size: 11px;
-      color: rgba(183,183,214,.92);
-    }
-    .block p{
-      margin:0;
-      font-family: var(--mono);
-      font-size: 12px;
-      line-height: 1.8;
-      color: rgba(183,183,214,.92);
-    }
-
-    .missionGrid{
-      margin-top: 12px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    @media(max-width: 520px){
-      .missionGrid{ grid-template-columns: 1fr; }
-    }
-    .mission{
-      border: 1px solid rgba(37,243,255,.16);
-      border-radius: 18px;
-      padding: 14px;
-      background: rgba(0,0,0,.16);
-    }
-    .mission .mTop{
-      display:flex;
-      justify-content:space-between;
-      gap: 10px;
-      font-family: var(--mono);
-      text-transform:uppercase;
-      letter-spacing:.16em;
-      font-size: 10px;
-      color: rgba(183,183,214,.92);
-      margin-bottom: 10px;
-    }
-    .tag{
-      padding: 2px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(194,91,255,.18);
-      background: rgba(194,91,255,.08);
-      color: rgba(242,242,255,.92);
-      font-weight: 900;
-      letter-spacing:.12em;
-      white-space:nowrap;
-    }
-    .mission .mName{
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing:.08em;
-      color: rgba(242,242,255,.95);
-      line-height: 1.7;
-    }
-    .mission .mMeta{
-      margin-top: 10px;
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing:.08em;
-      color: rgba(183,183,214,.92);
-      line-height: 1.6;
-    }
-
-    .ctaRow{
-      margin-top: 12px;
-      display:flex;
-      gap: 12px;
-      flex-wrap:wrap;
-    }
-    .cta{
-      border: 1px solid rgba(37,243,255,.18);
-      background: rgba(0,0,0,.16);
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-family: var(--mono);
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      font-size: 11px;
-      font-weight: 900;
-      color: rgba(242,242,255,.95);
+      font-size: var(--btn);
+      font-weight:900;
+      color: var(--text);
       cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
     }
-    .cta.primary{
-      background: linear-gradient(180deg, rgba(37,243,255,.12), rgba(194,91,255,.10));
+
+    .btn-sub{
+      font-size:9px;
+      letter-spacing:.22em;
+      opacity:.75;
+    }
+
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(37,243,255,.14), rgba(194,91,255,.12));
+    }
+
+    .btn.alert{
+      border-color: rgba(255,106,42,.55);
+      background: rgba(255,106,42,.14);
     }
   </style>
 </head>
@@ -491,56 +206,24 @@
 <body>
   <div class="fx-grid"></div>
 
-  <!-- ONBOARDING -->
   <main class="hud" id="kyrwrap">
     <section class="frame">
       <header class="top">
-        <!-- LEFT: typing header text -->
         <span><b id="welcomeText"></b></span>
         <span>STΛTUS: <b id="kyrStatus">BOOT</b></span>
       </header>
 
-      <!-- Boot progress bar + percent -->
-      <div class="bootbar" aria-label="Boot progress">
+      <div class="bootbar">
         <div class="bootlabel">BOOT SEQUENCE</div>
         <div class="track"><div class="fill" id="bootFill"></div></div>
         <div class="pct" id="bootPct">0%</div>
       </div>
 
       <div class="grid" id="mainGrid">
-        <!-- LEFT BIG PANEL -->
         <div class="panel">
-          <div class="idRow">
-            <div class="logo">
-              <img src="kyrax-wolf.png" alt="" onerror="this.style.display='none'">
-            </div>
-            <div>
-              <h1 class="title">SΛTCORP</h1>
-              <div class="subtitle">You arrived exactly when expected</div>
-            </div>
-          </div>
-
-          <div class="statusGrid" aria-label="System readouts">
-            <div class="statusCard">
-              <div class="k">NODE</div>
-              <div class="v">HYPΞRION / CORE LATTICE</div>
-            </div>
-            <div class="statusCard">
-              <div class="k">UPLINK</div>
-              <div class="v" id="uplinkReadout">NEGOTIATING</div>
-            </div>
-            <div class="statusCard">
-              <div class="k">SECURITY</div>
-              <div class="v">GATES ARMED</div>
-            </div>
-            <div class="statusCard">
-              <div class="k">OPERATOR</div>
-              <div class="v" id="operatorReadout">UNASSIGNED</div>
-            </div>
-          </div>
+          <h1 class="title">SΛTCORP</h1>
         </div>
 
-        <!-- RIGHT BIG BOX -->
         <div class="box">
           <div class="boxhead">
             <span>SYSTΞM TRΛNSMISSION</span>
@@ -550,238 +233,59 @@
           <div class="log" id="kyrLog"></div>
 
           <div class="actions locked" id="actions">
-            <button class="btn" data-act="login" type="button">AUTHENTICATE</button>
-            <button class="btn" data-act="signup" type="button">NΞW OPΞRΛTOR</button>
-            <button class="btn primary" data-act="guest" type="button">SIMULATION MODE</button>
-            <button class="btn alert" data-act="pulse" type="button">PULSΞ</button>
+            <button class="btn" data-act="login">
+              AUTHENTICATE
+              <span class="btn-sub">SIGN IN</span>
+            </button>
+
+            <button class="btn" data-act="signup">
+              NΞW OPΞRΛTOR
+              <span class="btn-sub">SIGN UP</span>
+            </button>
+
+            <button class="btn primary" data-act="guest">
+              SIMULATION MODE
+              <span class="btn-sub">JOIN AS GUEST</span>
+            </button>
+
+            <button class="btn alert" data-act="pulse">
+              PULSΞ
+              <span class="btn-sub">LIVE SENTIENT RADIO</span>
+            </button>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- MISSION SELECT SHELL -->
-  <section class="site" id="site">
-    <div class="shell">
-      <div class="shellTop">
-        <div class="brand">HYPΞRION // MISSION SELECT</div>
-        <div id="session">SESSION: —</div>
-      </div>
-
-      <div class="shellBody">
-        <div class="block">
-          <h2>OPERATOR ROUTE</h2>
-          <p id="stored">—</p>
-
-          <div class="ctaRow">
-            <button class="cta primary" type="button">DEPLOY</button>
-            <button class="cta" type="button">SYSTEMS</button>
-            <button class="cta" type="button">ARCHIVE</button>
-          </div>
-
-          <div class="missionGrid" id="missionGrid"></div>
-        </div>
-
-        <div class="block">
-          <h2>BRIEFING</h2>
-          <p id="briefing">
-            KYRAX has initialized the interface layer. Select a mission node to proceed.
-            This is a placeholder shell designed to look like an in-game menu.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <script>
-    const kyrLog = document.getElementById("kyrLog");
-    const kyrStatus = document.getElementById("kyrStatus");
-    const kyrMsg = document.getElementById("kyrMsg");
-    const actions = document.getElementById("actions");
-
-    const bootFill = document.getElementById("bootFill");
-    const bootPct = document.getElementById("bootPct");
-
-    const uplinkReadout = document.getElementById("uplinkReadout");
-    const operatorReadout = document.getElementById("operatorReadout");
-
     const welcomeTextEl = document.getElementById("welcomeText");
     const mainGrid = document.getElementById("mainGrid");
-
-    const site = document.getElementById("site");
-    const kyrwrap = document.getElementById("kyrwrap");
-    const session = document.getElementById("session");
-    const stored = document.getElementById("stored");
-    const missionGrid = document.getElementById("missionGrid");
-    const briefing = document.getElementById("briefing");
+    const kyrStatus = document.getElementById("kyrStatus");
+    const kyrMsg = document.getElementById("kyrMsg");
+    const kyrLog = document.getElementById("kyrLog");
+    const actions = document.getElementById("actions");
 
     const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-    function setProgress(p){
-      const clamped = Math.max(0, Math.min(100, Math.round(p)));
-      bootFill.style.width = clamped + "%";
-      bootPct.textContent = clamped + "%";
-    }
-
     async function typeText(el, text, speed){
-      el.textContent = "";
-      let out = "";
       for (const c of text){
-        out += c;
-        el.textContent = out;
+        el.textContent += c;
         await sleep(speed);
       }
     }
 
-    // 1) Boot bar fills FIRST, while rest of panel stays hidden
-    async function bootBarFill(){
-      setProgress(0);
-      // "normal fast" speed: ~1.6s total
-      const durationMs = 1600;
-      const stepMs = 30;
-      const steps = Math.ceil(durationMs / stepMs);
-
-      for (let i = 0; i <= steps; i++){
-        const p = (i / steps) * 100;
-        setProgress(p);
-        await sleep(stepMs);
-      }
-      setProgress(100);
-    }
-
-    // 2) After bar fill, show the rest, then run typing sequence in log
-    async function runSequence(){
-      // Header typing (stays)
-      await typeText(welcomeTextEl, "WΞLCOMΞ TO SΛTCORP", 55);
-
-      // Show main panel contents now
+    async function boot(){
+      await sleep(800);
+      await typeText(welcomeTextEl,"WΞLCOMΞ TO SΛTCORP",55);
       mainGrid.classList.add("show");
-
-      // Required log behavior
-      const line1Base = "[KYRAX] Uplink negotiation…";
-      const line2 = "[KYRAX] Standing by...";
-
-      const TYPE_SPEED = 55;
-      const PAUSE_BEFORE_STABLE = 450;
-      const PAUSE_BEFORE_STANDBY = 250;
-
-      kyrStatus.textContent = "BOOT";
-      kyrMsg.textContent = "LINKING";
-      uplinkReadout.textContent = "NEGOTIATING";
-      operatorReadout.textContent = "UNASSIGNED";
-      kyrLog.textContent = "";
-
-      // Type line1Base
-      let out = "";
-      for (const c of line1Base){
-        out += c;
-        kyrLog.textContent = out;
-        await sleep(TYPE_SPEED);
-      }
-
-      // Pause then append STABLE instantly
-      await sleep(PAUSE_BEFORE_STABLE);
-      kyrLog.textContent = line1Base + " STABLE\n";
-      uplinkReadout.textContent = "STABLE";
-
-      // Type line2 under it
-      await sleep(PAUSE_BEFORE_STANDBY);
-      out = "";
-      for (const c of line2){
-        out += c;
-        kyrLog.textContent = line1Base + " STABLE\n" + out;
-        await sleep(TYPE_SPEED);
-      }
-
-      // Finish
+      kyrLog.textContent = "[KYRAX] Uplink negotiation… STABLE\n[KYRAX] Standing by...";
       kyrStatus.textContent = "STΛNDBY";
       kyrMsg.textContent = "IDLΞ";
       actions.classList.remove("locked");
     }
 
-    function buildMissions(route){
-      const presets = {
-        login: {
-          brief: "Authenticated route selected. Operator privileges will be applied to mission nodes.",
-          missions: [
-            { id:"A-01", name:"SECURE NODE: AUTH GATE", tag:"PRIORITY", meta:"Access: Operator · Risk: Low" },
-            { id:"B-14", name:"SYSTEMS CHECK: CORE LATTICE", tag:"VERIFY", meta:"Access: Operator · Risk: Medium" },
-            { id:"C-09", name:"DEPLOYMENT: SECTOR NAMTAR", tag:"DEPLOY", meta:"Access: Operator · Risk: High" },
-            { id:"D-22", name:"ARCHIVE: KYRAX MEMORY BANK", tag:"READ", meta:"Access: Operator · Risk: Low" }
-          ]
-        },
-        signup: {
-          brief: "New operator registration route selected. Limited nodes available until verification.",
-          missions: [
-            { id:"R-00", name:"REGISTRATION: OPERATOR SHELL", tag:"ONBOARD", meta:"Access: Limited · Risk: Low" },
-            { id:"T-03", name:"TRAINING: SIMULATION DRILL", tag:"SIM", meta:"Access: Limited · Risk: Low" },
-            { id:"V-07", name:"VERIFICATION: IDENTITY CHECK", tag:"VERIFY", meta:"Access: Limited · Risk: Medium" },
-            { id:"S-11", name:"SYSTEM TOUR: BRIDGE UI", tag:"INFO", meta:"Access: Limited · Risk: Low" }
-          ]
-        },
-        guest: {
-          brief: "Simulation mode engaged. This environment is non-persistent and safe to explore.",
-          missions: [
-            { id:"SIM-1", name:"SIMULATION: ZERO-THREAT ZONE", tag:"SAFE", meta:"Access: Guest · Risk: None" },
-            { id:"SIM-2", name:"SIMULATION: HUD CALIBRATION", tag:"CAL", meta:"Access: Guest · Risk: None" },
-            { id:"SIM-3", name:"SIMULATION: MOVEMENT PROTOCOL", tag:"DRILL", meta:"Access: Guest · Risk: Low" },
-            { id:"SIM-4", name:"SIMULATION: SYSTEM OVERVIEW", tag:"INFO", meta:"Access: Guest · Risk: None" }
-          ]
-        },
-        pulse: {
-          brief: "PULSΞ channel opened. Broadcast layer is present but not defined yet.",
-          missions: [
-            { id:"P-01", name:"BROADCAST: SIGNAL UPLINK", tag:"LIVE", meta:"Access: Channel · Risk: Medium" },
-            { id:"P-02", name:"OVERLAY: TRANSMISSION FRAME", tag:"HUD", meta:"Access: Channel · Risk: Low" },
-            { id:"P-03", name:"QUEUE: MESSAGE STACK", tag:"QUEUE", meta:"Access: Channel · Risk: Low" },
-            { id:"P-04", name:"ARCHIVE: PULSΞ LOGS", tag:"READ", meta:"Access: Channel · Risk: Low" }
-          ]
-        }
-      };
-
-      const data = presets[route] || presets.guest;
-
-      briefing.textContent = data.brief;
-      missionGrid.innerHTML = data.missions.map(m => `
-        <div class="mission">
-          <div class="mTop">
-            <span>${m.id}</span>
-            <span class="tag">${m.tag}</span>
-          </div>
-          <div class="mName">${m.name}</div>
-          <div class="mMeta">${m.meta}</div>
-        </div>
-      `).join("");
-    }
-
-    // Orchestrate: fill bar -> type header -> show panel -> run sequence
-    (async ()=>{
-      // Hide panel content until bar is done
-      mainGrid.classList.remove("show");
-
-      await bootBarFill();
-      await runSequence();
-    })();
-
-    // Buttons
-    document.querySelectorAll("[data-act]").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        if (actions.classList.contains("locked")) return;
-
-        const act = btn.getAttribute("data-act");
-        const label = act.toUpperCase();
-
-        localStorage.setItem("kyrChoice_v1", act);
-
-        session.textContent = "SESSION: " + label;
-        stored.textContent = "ROUTE: " + label + "  //  KEY: kyrChoice_v1 = " + act;
-
-        buildMissions(act);
-
-        kyrwrap.style.display = "none";
-        site.classList.add("on");
-      });
-    });
+    boot();
   </script>
 </body>
 </html>
