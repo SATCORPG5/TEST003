@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- UPDATED: safe-area support -->
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>SΛTCORP // HYPΞRION</title>
   <meta name="theme-color" content="#060610" />
 
@@ -34,6 +35,16 @@
       --sub: clamp(12px, 1.2vw, 14px);
       --log: clamp(13px, 1.25vw, 15px);
       --btn: clamp(11px, 1.15vw, 12px);
+
+      /* UPDATED: viewport fit controls */
+      --hudPad: clamp(8px, 1.4vw, 16px);
+      --frameH: 96vh;
+
+      /* UPDATED: Safe-area insets (iOS notch / Android cutouts) */
+      --safeT: env(safe-area-inset-top, 0px);
+      --safeR: env(safe-area-inset-right, 0px);
+      --safeB: env(safe-area-inset-bottom, 0px);
+      --safeL: env(safe-area-inset-left, 0px);
     }
 
     *{ box-sizing:border-box; }
@@ -64,17 +75,22 @@
     }
 
     /* ===== ONBOARDING HUD ===== */
+    /* UPDATED: safe-area padding + tighter fit */
     .hud{
       min-height:100vh;
       display:grid;
       place-items:center;
-      padding: var(--padOuter);
+      padding:
+        calc(var(--hudPad) + var(--safeT))
+        calc(var(--hudPad) + var(--safeR))
+        calc(var(--hudPad) + var(--safeB))
+        calc(var(--hudPad) + var(--safeL));
     }
 
+    /* UPDATED: make console nearly full-screen and scale correctly */
     .frame{
-      width:100%;
-      max-width: var(--max);
-      min-height: 80vh;
+      width: min(var(--max), calc(100vw - (var(--hudPad) * 2) - var(--safeL) - var(--safeR)));
+      height: min(var(--frameH), calc(100vh - (var(--hudPad) * 2) - var(--safeT) - var(--safeB)));
       border-radius: var(--r);
       background: linear-gradient(180deg, rgba(14,16,36,.92), rgba(8,9,20,.82));
       border: 1.5px solid var(--line);
@@ -82,6 +98,7 @@
       overflow:hidden;
       display:flex;
       flex-direction:column;
+      min-height: 0;
     }
 
     .top{
@@ -97,6 +114,7 @@
       gap: 12px;
       color: var(--muted);
       min-height: 52px;
+      flex: 0 0 auto;
     }
     .top b{ color:var(--text); font-weight:900; }
 
@@ -108,6 +126,7 @@
       align-items:center;
       gap: 12px;
       background: linear-gradient(90deg, rgba(37,243,255,.06), transparent 45%, rgba(194,91,255,.06));
+      flex: 0 0 auto;
     }
     .bootlabel{
       font-family: var(--mono);
@@ -145,12 +164,14 @@
     }
 
     /* Main grid (hidden until bootbar completes) */
+    /* UPDATED: allow full-height math inside frame */
     .grid{
       padding: var(--padInner);
       display:grid;
       grid-template-columns: 1.15fr .85fr;
       gap: var(--gap);
       flex:1;
+      min-height: 0;           /* critical */
       align-items:stretch;
       opacity:0;
       transform: translateY(8px);
@@ -164,13 +185,17 @@
     }
 
     @media(max-width: 1100px){
+      :root{
+        --frameH: 98vh;
+        --r: 16px;
+      }
       .grid{ grid-template-columns:1fr; }
-      .frame{ min-height: 0; }
     }
 
+    /* UPDATED: remove forced tall min-height so it scales down on small screens */
     .panel, .box{
       height:100%;
-      min-height: clamp(360px, 48vh, 560px);
+      min-height: 0;
     }
 
     .panel{
@@ -182,12 +207,14 @@
       flex-direction:column;
       justify-content:flex-start;
       gap: 14px;
+      min-height: 0;
     }
 
     .idRow{
       display:flex;
       gap: clamp(14px, 1.8vw, 20px);
       align-items:center;
+      flex: 0 0 auto;
     }
 
     .logo{
@@ -236,7 +263,8 @@
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      flex:1;
+      flex: 1;
+      min-height: 0;
       align-content:start;
     }
     @media(max-width: 520px){
@@ -271,6 +299,7 @@
       overflow:hidden;
       display:flex;
       flex-direction:column;
+      min-height: 0;
     }
 
     .boxhead{
@@ -285,16 +314,21 @@
       justify-content:space-between;
       gap: 10px;
       color: var(--muted);
+      flex: 0 0 auto;
     }
 
+    /* UPDATED: allow log to scroll when tight */
     .log{
       padding: clamp(16px, 2vw, 22px);
       font-family: var(--mono);
       font-size: var(--log);
       line-height: 1.85;
       white-space:pre-wrap;
-      flex:1;
-      min-height: 220px;
+
+      flex: 1;
+      min-height: 0;
+      overflow:auto;
+      overscroll-behavior: contain;
     }
 
     .actions{
@@ -302,6 +336,7 @@
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
+      flex: 0 0 auto;
     }
     @media(max-width: 520px){
       .actions{ grid-template-columns: 1fr; }
