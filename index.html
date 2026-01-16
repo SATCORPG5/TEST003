@@ -10,11 +10,8 @@
     :root{
       --bg:#060610;
       --bg2:#0b0b18;
-      --panel: rgba(12,14,30,.82);
 
       --line: rgba(37,243,255,.22);
-      --line2: rgba(194,91,255,.18);
-
       --text:#f2f2ff;
       --muted:#b7b7d6;
 
@@ -27,7 +24,6 @@
       --sans: system-ui, -apple-system, Segoe UI, Roboto, Arial;
 
       --r: 16px;
-      --t: 150ms;
       --max: 1180px;
     }
 
@@ -42,7 +38,6 @@
         radial-gradient(1200px 700px at 20% 10%, rgba(37,243,255,.10), transparent 55%),
         radial-gradient(1000px 650px at 80% 45%, rgba(194,91,255,.10), transparent 55%),
         linear-gradient(180deg, var(--bg), var(--bg2));
-      overflow-x:hidden;
     }
 
     /* FX */
@@ -298,12 +293,9 @@
       <div class="box">
         <div class="boxhead">
           <span>KYRAX TRANSMISSION</span>
-          <span id="kyrMsg">STANDBY</span>
+          <span id="kyrMsg">IDLE</span>
         </div>
-        <div class="log" id="kyrLog">
-[KYRAX] AI core initialized.
-[KYRAX] Neural mesh online.
-        </div>
+        <div class="log" id="kyrLog"></div>
         <div class="actions">
           <button class="btn" data-act="login">AUTHENTICATE</button>
           <button class="btn" data-act="signup">NEW OPERATOR</button>
@@ -325,61 +317,72 @@
 </section>
 
 <script>
-/* ========= TYPEWRITER KYRAX STANDBY ========= */
-const kyrLog = document.getElementById("kyrLog");
-const kyrStatus = document.getElementById("kyrStatus");
-const kyrMsg = document.getElementById("kyrMsg");
-const operatorEl = document.getElementById("operator");
-const site = document.getElementById("site");
-const kyrwrap = document.getElementById("kyrwrap");
-const session = document.getElementById("session");
-const stored = document.getElementById("stored");
+  const kyrLog = document.getElementById("kyrLog");
+  const kyrStatus = document.getElementById("kyrStatus");
+  const kyrMsg = document.getElementById("kyrMsg");
+  const operatorEl = document.getElementById("operator");
+  const site = document.getElementById("site");
+  const kyrwrap = document.getElementById("kyrwrap");
+  const session = document.getElementById("session");
+  const stored = document.getElementById("stored");
 
-let running = true;
-const lines = [
-  "[KYRAX] STANDING BY…",
-  "[KYRAX] LISTENING FOR OPERATOR INPUT…",
-  "[KYRAX] AWAITING ROUTE SELECTION…"
-];
+  const TEXT = "[KYRAX] Standing by...";
+  const TYPE_SPEED = 55;
+  const DELETE_SPEED = 35;
+  const HOLD_AFTER_TYPE = 900;
+  const HOLD_AFTER_DELETE = 400;
 
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+  let running = true;
 
-async function typeLoop(){
-  let i=0;
-  while(running){
-    const line = lines[i%lines.length];
-    let out="";
-    kyrLog.textContent += "\n";
-    for(let c of line){
-      out+=c;
-      kyrLog.textContent = kyrLog.textContent.split("\n").slice(0,-1).join("\n")+"\n"+out+"▍";
-      await sleep(22);
+  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+  async function typewriterLoop(){
+    while (running){
+      let current = "";
+      kyrLog.textContent = "";
+
+      for (let c of TEXT){
+        if (!running) return;
+        current += c;
+        kyrLog.textContent = current + "▍";
+        await sleep(TYPE_SPEED);
+      }
+
+      kyrLog.textContent = current;
+      await sleep(HOLD_AFTER_TYPE);
+
+      for (let i = current.length; i >= 0; i--){
+        if (!running) return;
+        kyrLog.textContent = current.slice(0, i) + "▍";
+        await sleep(DELETE_SPEED);
+      }
+
+      kyrLog.textContent = "";
+      await sleep(HOLD_AFTER_DELETE);
     }
-    kyrLog.textContent = kyrLog.textContent.replace("▍","");
-    await sleep(800);
-    i++;
   }
-}
-typeLoop();
 
-/* ========= BUTTON ROUTING ========= */
-document.querySelectorAll("[data-act]").forEach(btn=>{
-  btn.onclick=()=>{
-    running=false;
-    const act = btn.dataset.act;
-    kyrStatus.textContent="ROUTE";
-    kyrMsg.textContent="SET";
-    operatorEl.textContent="OPERATOR: ACTIVE";
-    kyrLog.textContent+="\n[KYRAX] ROUTE SELECTED: "+act.toUpperCase();
+  typewriterLoop();
 
-    localStorage.setItem("kyrChoice_v1",act);
-    session.textContent="SESSION: "+act.toUpperCase();
-    stored.textContent="kyrChoice_v1 = "+act;
+  document.querySelectorAll("[data-act]").forEach(btn=>{
+    btn.onclick = () => {
+      running = false;
+      const act = btn.dataset.act;
 
-    kyrwrap.style.display="none";
-    site.classList.add("on");
-  };
-});
+      kyrStatus.textContent = "ROUTE";
+      kyrMsg.textContent = "SET";
+      operatorEl.textContent = "OPERATOR: ACTIVE";
+
+      kyrLog.textContent = "[KYRAX] ROUTE SELECTED: " + act.toUpperCase();
+
+      localStorage.setItem("kyrChoice_v1", act);
+      session.textContent = "SESSION: " + act.toUpperCase();
+      stored.textContent = "kyrChoice_v1 = " + act;
+
+      kyrwrap.style.display = "none";
+      site.classList.add("on");
+    };
+  });
 </script>
 </body>
 </html>
