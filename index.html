@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- UPDATED: safe-area + notch support -->
+  <!-- UPDATED: safe-area support -->
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>SΛTCORP // HYPΞRION</title>
   <meta name="theme-color" content="#060610" />
@@ -36,11 +36,10 @@
       --log: clamp(13px, 1.25vw, 15px);
       --btn: clamp(11px, 1.15vw, 12px);
 
-      /* Viewport fit controls */
+      /* ===== ADDED: viewport fit + safe-area ===== */
       --hudPad: clamp(8px, 1.4vw, 16px);
       --frameH: 96vh;
 
-      /* Safe-area insets (iOS notch / Android cutouts) */
       --safeT: env(safe-area-inset-top, 0px);
       --safeR: env(safe-area-inset-right, 0px);
       --safeB: env(safe-area-inset-bottom, 0px);
@@ -80,8 +79,6 @@
       min-height:100vh;
       display:grid;
       place-items:center;
-
-      /* UPDATED: safe-area aware padding */
       padding:
         calc(var(--hudPad) + var(--safeT))
         calc(var(--hudPad) + var(--safeR))
@@ -90,13 +87,9 @@
     }
 
     .frame{
-      /* UPDATED: near full-screen + safe-area aware sizing */
       width: min(var(--max), calc(100vw - (var(--hudPad) * 2) - var(--safeL) - var(--safeR)));
-
-      /* dvh/svh to avoid iOS dynamic address bar issues */
       height: min(var(--frameH), calc(100dvh - (var(--hudPad) * 2) - var(--safeT) - var(--safeB)));
       height: min(var(--frameH), calc(100svh - (var(--hudPad) * 2) - var(--safeT) - var(--safeB)));
-
       border-radius: var(--r);
       background: linear-gradient(180deg, rgba(14,16,36,.92), rgba(8,9,20,.82));
       border: 1.5px solid var(--line);
@@ -173,9 +166,8 @@
       grid-template-columns: 1.15fr .85fr;
       gap: var(--gap);
       flex:1;
-      min-height:0;      /* UPDATED: critical */
+      min-height: 0;
       align-items:stretch;
-
       opacity:0;
       transform: translateY(8px);
       transition: opacity 240ms ease, transform 240ms ease;
@@ -187,14 +179,9 @@
       pointer-events:auto;
     }
 
-    @media(max-width: 1100px){
-      .grid{ grid-template-columns:1fr; }
-    }
-
-    /* UPDATED: allow proper scaling instead of forcing height */
     .panel, .box{
-      height:100%;
-      min-height:0;
+      height: 100%;
+      min-height: 0;
     }
 
     .panel{
@@ -206,7 +193,7 @@
       flex-direction:column;
       justify-content:flex-start;
       gap: 14px;
-      min-height:0;
+      min-height: 0;
     }
 
     .idRow{
@@ -262,7 +249,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       flex:1;
-      min-height:0;
+      min-height: 0;
       align-content:start;
     }
     @media(max-width: 520px){
@@ -297,7 +284,7 @@
       overflow:hidden;
       display:flex;
       flex-direction:column;
-      min-height:0;
+      min-height: 0;
     }
 
     .boxhead{
@@ -314,16 +301,14 @@
       color: var(--muted);
     }
 
-    /* UPDATED: log scrolls when needed */
     .log{
       padding: clamp(16px, 2vw, 22px);
       font-family: var(--mono);
       font-size: var(--log);
       line-height: 1.85;
       white-space:pre-wrap;
-
       flex:1;
-      min-height:0;
+      min-height: 0;
       overflow:auto;
       overscroll-behavior: contain;
     }
@@ -534,44 +519,38 @@
       background: linear-gradient(180deg, rgba(37,243,255,.12), rgba(194,91,255,.10));
     }
 
-    /* ===== MOBILE FIX: stop squishing, stack cleanly ===== */
+    /* ===== HARD MOBILE FIX: stop overlap, stack + scroll properly ===== */
     @media (max-width: 820px){
-      :root{
-        --frameH: 9999px;
-        --padInner: 14px;
-        --gap: 12px;
-        --r: 16px;
-      }
-
-      .hud{
-        padding:
-          calc(10px + var(--safeT))
-          calc(10px + var(--safeR))
-          calc(10px + var(--safeB))
-          calc(10px + var(--safeL));
-        align-items:start;
-        place-items: start center;
-      }
-
       .frame{
-        height: auto;
+        height: auto !important;
         min-height: calc(100dvh - var(--safeT) - var(--safeB));
         min-height: calc(100svh - var(--safeT) - var(--safeB));
+        overflow: auto;
       }
 
       .grid{
-        grid-template-columns: 1fr;
+        flex: 0 !important;
+        min-height: auto !important;
+        height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
       }
 
-      .box{ min-height: 420px; }
+      .panel, .box{
+        height: auto !important;
+        min-height: auto !important;
+      }
 
       .log{
-        max-height: 260px;
-        overflow:auto;
+        flex: 0 !important;
+        min-height: 140px;
+        max-height: 220px;
+        overflow: auto;
       }
 
-      .btn{
-        padding: 16px 14px;
+      .actions{
+        grid-template-columns: 1fr !important;
       }
     }
   </style>
@@ -749,6 +728,7 @@
 
     async function runSequence(){
       await typeText(welcomeTextEl, "WΞLCOMΞ TO SΛTCORP", 55);
+
       mainGrid.classList.add("show");
 
       const line1Base = "[KYRAX] Uplink negotiation…";
