@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- UPDATED: safe-area support -->
+  <!-- UPDATED: safe-area + notch support -->
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>SΛTCORP // HYPΞRION</title>
   <meta name="theme-color" content="#060610" />
@@ -36,11 +36,11 @@
       --log: clamp(13px, 1.25vw, 15px);
       --btn: clamp(11px, 1.15vw, 12px);
 
-      /* UPDATED: viewport fit controls */
+      /* Viewport fit controls */
       --hudPad: clamp(8px, 1.4vw, 16px);
       --frameH: 96vh;
 
-      /* UPDATED: Safe-area insets (iOS notch / Android cutouts) */
+      /* Safe-area insets (iOS notch / Android cutouts) */
       --safeT: env(safe-area-inset-top, 0px);
       --safeR: env(safe-area-inset-right, 0px);
       --safeB: env(safe-area-inset-bottom, 0px);
@@ -59,6 +59,7 @@
         radial-gradient(1200px 800px at 80% 45%, rgba(194,91,255,.12), transparent 55%),
         linear-gradient(180deg, var(--bg), var(--bg2));
       overflow-x:hidden;
+      -webkit-text-size-adjust: 100%;
     }
 
     .fx-grid{
@@ -75,11 +76,12 @@
     }
 
     /* ===== ONBOARDING HUD ===== */
-    /* UPDATED: safe-area padding + tighter fit */
     .hud{
       min-height:100vh;
       display:grid;
       place-items:center;
+
+      /* UPDATED: safe-area aware padding */
       padding:
         calc(var(--hudPad) + var(--safeT))
         calc(var(--hudPad) + var(--safeR))
@@ -87,10 +89,14 @@
         calc(var(--hudPad) + var(--safeL));
     }
 
-    /* UPDATED: make console nearly full-screen and scale correctly */
     .frame{
+      /* UPDATED: near full-screen + safe-area aware sizing */
       width: min(var(--max), calc(100vw - (var(--hudPad) * 2) - var(--safeL) - var(--safeR)));
-      height: min(var(--frameH), calc(100vh - (var(--hudPad) * 2) - var(--safeT) - var(--safeB)));
+
+      /* dvh/svh to avoid iOS dynamic address bar issues */
+      height: min(var(--frameH), calc(100dvh - (var(--hudPad) * 2) - var(--safeT) - var(--safeB)));
+      height: min(var(--frameH), calc(100svh - (var(--hudPad) * 2) - var(--safeT) - var(--safeB)));
+
       border-radius: var(--r);
       background: linear-gradient(180deg, rgba(14,16,36,.92), rgba(8,9,20,.82));
       border: 1.5px solid var(--line);
@@ -98,7 +104,6 @@
       overflow:hidden;
       display:flex;
       flex-direction:column;
-      min-height: 0;
     }
 
     .top{
@@ -114,7 +119,6 @@
       gap: 12px;
       color: var(--muted);
       min-height: 52px;
-      flex: 0 0 auto;
     }
     .top b{ color:var(--text); font-weight:900; }
 
@@ -126,7 +130,6 @@
       align-items:center;
       gap: 12px;
       background: linear-gradient(90deg, rgba(37,243,255,.06), transparent 45%, rgba(194,91,255,.06));
-      flex: 0 0 auto;
     }
     .bootlabel{
       font-family: var(--mono);
@@ -164,15 +167,15 @@
     }
 
     /* Main grid (hidden until bootbar completes) */
-    /* UPDATED: allow full-height math inside frame */
     .grid{
       padding: var(--padInner);
       display:grid;
       grid-template-columns: 1.15fr .85fr;
       gap: var(--gap);
       flex:1;
-      min-height: 0;           /* critical */
+      min-height:0;      /* UPDATED: critical */
       align-items:stretch;
+
       opacity:0;
       transform: translateY(8px);
       transition: opacity 240ms ease, transform 240ms ease;
@@ -185,17 +188,13 @@
     }
 
     @media(max-width: 1100px){
-      :root{
-        --frameH: 98vh;
-        --r: 16px;
-      }
       .grid{ grid-template-columns:1fr; }
     }
 
-    /* UPDATED: remove forced tall min-height so it scales down on small screens */
+    /* UPDATED: allow proper scaling instead of forcing height */
     .panel, .box{
       height:100%;
-      min-height: 0;
+      min-height:0;
     }
 
     .panel{
@@ -207,14 +206,13 @@
       flex-direction:column;
       justify-content:flex-start;
       gap: 14px;
-      min-height: 0;
+      min-height:0;
     }
 
     .idRow{
       display:flex;
       gap: clamp(14px, 1.8vw, 20px);
       align-items:center;
-      flex: 0 0 auto;
     }
 
     .logo{
@@ -263,8 +261,8 @@
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      flex: 1;
-      min-height: 0;
+      flex:1;
+      min-height:0;
       align-content:start;
     }
     @media(max-width: 520px){
@@ -299,7 +297,7 @@
       overflow:hidden;
       display:flex;
       flex-direction:column;
-      min-height: 0;
+      min-height:0;
     }
 
     .boxhead{
@@ -314,10 +312,9 @@
       justify-content:space-between;
       gap: 10px;
       color: var(--muted);
-      flex: 0 0 auto;
     }
 
-    /* UPDATED: allow log to scroll when tight */
+    /* UPDATED: log scrolls when needed */
     .log{
       padding: clamp(16px, 2vw, 22px);
       font-family: var(--mono);
@@ -325,8 +322,8 @@
       line-height: 1.85;
       white-space:pre-wrap;
 
-      flex: 1;
-      min-height: 0;
+      flex:1;
+      min-height:0;
       overflow:auto;
       overscroll-behavior: contain;
     }
@@ -336,7 +333,6 @@
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
-      flex: 0 0 auto;
     }
     @media(max-width: 520px){
       .actions{ grid-template-columns: 1fr; }
@@ -357,7 +353,6 @@
       cursor:pointer;
       transition: transform 140ms linear, opacity 140ms linear, border-color 140ms linear;
 
-      /* sublabel layout */
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -538,6 +533,47 @@
     .cta.primary{
       background: linear-gradient(180deg, rgba(37,243,255,.12), rgba(194,91,255,.10));
     }
+
+    /* ===== MOBILE FIX: stop squishing, stack cleanly ===== */
+    @media (max-width: 820px){
+      :root{
+        --frameH: 9999px;
+        --padInner: 14px;
+        --gap: 12px;
+        --r: 16px;
+      }
+
+      .hud{
+        padding:
+          calc(10px + var(--safeT))
+          calc(10px + var(--safeR))
+          calc(10px + var(--safeB))
+          calc(10px + var(--safeL));
+        align-items:start;
+        place-items: start center;
+      }
+
+      .frame{
+        height: auto;
+        min-height: calc(100dvh - var(--safeT) - var(--safeB));
+        min-height: calc(100svh - var(--safeT) - var(--safeB));
+      }
+
+      .grid{
+        grid-template-columns: 1fr;
+      }
+
+      .box{ min-height: 420px; }
+
+      .log{
+        max-height: 260px;
+        overflow:auto;
+      }
+
+      .btn{
+        padding: 16px 14px;
+      }
+    }
   </style>
 </head>
 
@@ -548,13 +584,10 @@
   <main class="hud" id="kyrwrap">
     <section class="frame">
       <header class="top">
-        <!-- LEFT: typing header text -->
         <span><b id="welcomeText"></b></span>
-        <!-- STATUS label glyphified -->
         <span>STΛTUS: <b id="kyrStatus">BOOT</b></span>
       </header>
 
-      <!-- Boot progress bar + percent -->
       <div class="bootbar" aria-label="Boot progress">
         <div class="bootlabel">BOOT SEQUENCE</div>
         <div class="track"><div class="fill" id="bootFill"></div></div>
@@ -562,14 +595,12 @@
       </div>
 
       <div class="grid" id="mainGrid">
-        <!-- LEFT BIG PANEL -->
         <div class="panel">
           <div class="idRow">
             <div class="logo">
               <img src="kyrax-wolf.png" alt="" onerror="this.style.display='none'">
             </div>
             <div>
-              <!-- SATCORP glyphified -->
               <h1 class="title">SΛTCORP</h1>
               <div class="subtitle">You arrived exactly when expected</div>
             </div>
@@ -595,17 +626,14 @@
           </div>
         </div>
 
-        <!-- RIGHT BIG BOX -->
         <div class="box">
           <div class="boxhead">
-            <!-- SYSTEM TRANSMISSION glyphified -->
             <span>SYSTΞM TRΛNSMISSION</span>
             <span id="kyrMsg">BOOTING</span>
           </div>
 
           <div class="log" id="kyrLog"></div>
 
-          <!-- UPDATED BUTTONS: sublabels added -->
           <div class="actions locked" id="actions">
             <button class="btn" data-act="login" type="button">
               AUTHENTICATE
@@ -705,10 +733,8 @@
       }
     }
 
-    // Boot bar fills FIRST, while rest of panel stays hidden
     async function bootBarFill(){
       setProgress(0);
-      // "normal fast" speed: ~1.6s total
       const durationMs = 1600;
       const stepMs = 30;
       const steps = Math.ceil(durationMs / stepMs);
@@ -721,12 +747,8 @@
       setProgress(100);
     }
 
-    // After bar fill, show the rest, then run typing sequence in log
     async function runSequence(){
-      // WELCOME string glyphified
       await typeText(welcomeTextEl, "WΞLCOMΞ TO SΛTCORP", 55);
-
-      // Show main panel contents now
       mainGrid.classList.add("show");
 
       const line1Base = "[KYRAX] Uplink negotiation…";
@@ -742,7 +764,6 @@
       operatorReadout.textContent = "UNASSIGNED";
       kyrLog.textContent = "";
 
-      // Type line1Base
       let out = "";
       for (const c of line1Base){
         out += c;
@@ -750,12 +771,10 @@
         await sleep(TYPE_SPEED);
       }
 
-      // Pause then append STABLE instantly
       await sleep(PAUSE_BEFORE_STABLE);
       kyrLog.textContent = line1Base + " STABLE\n";
       uplinkReadout.textContent = "STABLE";
 
-      // Type line2 under it
       await sleep(PAUSE_BEFORE_STANDBY);
       out = "";
       for (const c of line2){
@@ -764,7 +783,6 @@
         await sleep(TYPE_SPEED);
       }
 
-      // Standby + Idle glyphified where requested
       kyrStatus.textContent = "STΛNDBY";
       kyrMsg.textContent = "IDLΞ";
       actions.classList.remove("locked");
@@ -825,14 +843,12 @@
       `).join("");
     }
 
-    // Orchestrate: fill bar -> type header -> show panel -> run sequence
     (async ()=>{
       mainGrid.classList.remove("show");
       await bootBarFill();
       await runSequence();
     })();
 
-    // Buttons
     document.querySelectorAll("[data-act]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
         if (actions.classList.contains("locked")) return;
