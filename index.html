@@ -10,19 +10,14 @@
     :root{
       --bg:#060610;
       --bg2:#0b0b18;
-
       --line: rgba(37,243,255,.22);
       --text:#f2f2ff;
       --muted:#b7b7d6;
-
       --cyan:#25f3ff;
-      --violet:#9b5de5;
       --violet2:#c25bff;
       --ember:#ff6a2a;
-
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       --sans: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-
       --r: 16px;
       --max: 1180px;
     }
@@ -40,7 +35,6 @@
         linear-gradient(180deg, var(--bg), var(--bg2));
     }
 
-    /* FX */
     .fx-grid{
       position:fixed; inset:0;
       pointer-events:none;
@@ -53,14 +47,7 @@
       opacity:.18;
       mix-blend-mode: overlay;
     }
-    .fx-vignette{
-      position:fixed; inset:0;
-      pointer-events:none;
-      background:
-        radial-gradient(circle at 50% 40%, transparent 40%, rgba(0,0,0,.60) 90%);
-    }
 
-    /* HUD */
     .hud{
       min-height:100vh;
       display:grid;
@@ -89,10 +76,7 @@
       color:var(--muted);
     }
 
-    .top b{
-      color:var(--text);
-      font-weight:900;
-    }
+    .top b{ color:var(--text); font-weight:900; }
 
     .grid{
       padding:16px;
@@ -157,21 +141,6 @@
       margin-top:6px;
     }
 
-    .telemetry{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
-    .card{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:10px;
-      font-family:var(--mono);
-      font-size:12px;
-    }
-
     .box{
       border:1px solid var(--line);
       border-radius:var(--r);
@@ -196,10 +165,7 @@
       font-family:var(--mono);
       font-size:12px;
       line-height:1.7;
-      white-space:pre-wrap;
-      min-height:160px;
-      max-height:260px;
-      overflow:auto;
+      min-height:120px;
     }
 
     .actions{
@@ -232,7 +198,6 @@
       background: rgba(255,106,42,.12);
     }
 
-    /* MAIN SITE */
     .site{
       display:none;
       min-height:100vh;
@@ -241,26 +206,12 @@
       margin:auto;
     }
     .site.on{ display:block; }
-
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      border-bottom:1px solid var(--line);
-      padding-bottom:14px;
-      margin-bottom:14px;
-      font-family:var(--mono);
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      font-size:11px;
-    }
   </style>
 </head>
 
 <body>
 <div class="fx-grid"></div>
-<div class="fx-vignette"></div>
 
-<!-- KYRAX AI CONSOLE -->
 <main class="hud" id="kyrwrap">
   <section class="frame">
     <header class="top">
@@ -269,27 +220,16 @@
     </header>
 
     <div class="grid">
-      <!-- LEFT -->
       <div class="panel">
         <div class="idRow">
-          <div class="logo">
-            <img src="kyrax-wolf.png" alt="KYRAX">
-          </div>
+          <div class="logo"><img src="kyrax-wolf.png" alt=""></div>
           <div>
             <h1 class="title">KYRAX</h1>
             <div class="sub">IN-GAME AI INTERFACE</div>
           </div>
         </div>
-
-        <div class="telemetry">
-          <div class="card">NODE: HYPΞRION CORE</div>
-          <div class="card">UPLINK: STABLE</div>
-          <div class="card">THREAT INDEX: LOW</div>
-          <div class="card" id="operator">OPERATOR: UNASSIGNED</div>
-        </div>
       </div>
 
-      <!-- RIGHT -->
       <div class="box">
         <div class="boxhead">
           <span>KYRAX TRANSMISSION</span>
@@ -307,12 +247,8 @@
   </section>
 </main>
 
-<!-- MAIN SITE PLACEHOLDER -->
 <section class="site" id="site">
-  <div class="topbar">
-    <span>HYPΞRION</span>
-    <span id="session">SESSION: —</span>
-  </div>
+  <p id="session"></p>
   <p id="stored"></p>
 </section>
 
@@ -320,7 +256,6 @@
   const kyrLog = document.getElementById("kyrLog");
   const kyrStatus = document.getElementById("kyrStatus");
   const kyrMsg = document.getElementById("kyrMsg");
-  const operatorEl = document.getElementById("operator");
   const site = document.getElementById("site");
   const kyrwrap = document.getElementById("kyrwrap");
   const session = document.getElementById("session");
@@ -328,51 +263,41 @@
 
   const TEXT = "[KYRAX] Standing by...";
   const TYPE_SPEED = 55;
-  const DELETE_SPEED = 35;
   const HOLD_AFTER_TYPE = 900;
-  const HOLD_AFTER_DELETE = 400;
+  const HOLD_AFTER_CLEAR = 500;
 
   let running = true;
 
-  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-  async function typewriterLoop(){
+  async function loop(){
     while (running){
-      let current = "";
-      kyrLog.textContent = "";
-
-      for (let c of TEXT){
+      let out = "";
+      for (const c of TEXT){
         if (!running) return;
-        current += c;
-        kyrLog.textContent = current + "▍";
+        out += c;
+        kyrLog.textContent = out;
         await sleep(TYPE_SPEED);
       }
 
-      kyrLog.textContent = current;
       await sleep(HOLD_AFTER_TYPE);
 
-      for (let i = current.length; i >= 0; i--){
-        if (!running) return;
-        kyrLog.textContent = current.slice(0, i) + "▍";
-        await sleep(DELETE_SPEED);
-      }
-
+      // INSTANT DELETE
       kyrLog.textContent = "";
-      await sleep(HOLD_AFTER_DELETE);
+
+      await sleep(HOLD_AFTER_CLEAR);
     }
   }
 
-  typewriterLoop();
+  loop();
 
   document.querySelectorAll("[data-act]").forEach(btn=>{
-    btn.onclick = () => {
+    btn.onclick = ()=>{
       running = false;
       const act = btn.dataset.act;
 
       kyrStatus.textContent = "ROUTE";
       kyrMsg.textContent = "SET";
-      operatorEl.textContent = "OPERATOR: ACTIVE";
-
       kyrLog.textContent = "[KYRAX] ROUTE SELECTED: " + act.toUpperCase();
 
       localStorage.setItem("kyrChoice_v1", act);
