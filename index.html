@@ -3,699 +3,376 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SATCORP — Tactical Systems</title>
-  <meta name="description" content="SATCORP tactical sci-fi landing page for GitHub Pages." />
-
+  <title>SATCORP</title>
+  <meta name="theme-color" content="#0b0c0f" />
   <style>
     :root{
-      /* SATCORP Tactical Palette */
-      --bg0:#06080c;         /* near-black */
-      --bg1:#0b0f17;         /* graphite */
-      --panel:#0f1623;       /* gunmetal */
-      --panel2:#121c2c;      /* steel */
-      --line:rgba(255,255,255,.12);
+      --bg:#0b0c0f;
+      --panel:#151821;
+      --line:#2a2f3d;
+      --text:#f2f3f6;
+      --muted:#b6bcc9;
+      --ember:#ff6a2a;
+      --sand:#c8b48a;
 
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.66);
-
-      --ember:#ff6a00;       /* ember orange */
-      --ember2:#ff8a2a;
-      --sand:#d8c4a3;        /* sand neutral */
-      --sand2:#bda889;
-
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-
-      --r:18px;
-      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      --radius: 12px;
+      --t: 140ms;
+      --max: 1120px;
     }
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
       margin:0;
-      font-family:var(--sans);
-      color:var(--text);
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+    }
+
+    /* ---------- KYRAX ONBOARDING ---------- */
+    .kyrwrap{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding: 18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .kyrwrap::before{
+      content:"";
+      position:absolute; inset:0;
       background:
-        radial-gradient(1000px 700px at 15% 15%, rgba(255,106,0,.12), transparent 60%),
-        radial-gradient(900px 600px at 85% 25%, rgba(216,196,163,.06), transparent 60%),
-        radial-gradient(800px 700px at 60% 90%, rgba(255,138,42,.08), transparent 60%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow-x:hidden;
-    }
-    a{ color:inherit; text-decoration:none; }
-    a:hover{ text-decoration:underline; }
-
-    /* Subtle scanlines */
-    .scanlines{
-      position:fixed; inset:0;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.02),
-        rgba(255,255,255,0.02) 1px,
-        transparent 1px,
-        transparent 4px
-      );
-      opacity:.14;
+        radial-gradient(900px 520px at 20% 15%, rgba(255,106,42,.10), transparent 60%),
+        radial-gradient(900px 520px at 78% 40%, rgba(200,180,138,.08), transparent 60%),
+        repeating-linear-gradient(to bottom, rgba(255,255,255,.028) 0px, rgba(255,255,255,.028) 1px, transparent 2px, transparent 11px);
+      opacity:.10;
+      mix-blend-mode:overlay;
       pointer-events:none;
-      mix-blend-mode: overlay;
-      z-index:0;
     }
 
-    /* Ember glow accents (controlled) */
-    .glow{
-      position:fixed;
-      width:520px; height:520px;
-      filter: blur(50px);
-      opacity:.35;
-      pointer-events:none;
-      z-index:0;
-      background: radial-gradient(circle at 30% 30%, rgba(255,106,0,.95), transparent 58%),
-                  radial-gradient(circle at 70% 70%, rgba(255,138,42,.55), transparent 62%);
-      animation: drift 14s ease-in-out infinite alternate;
-    }
-    .glow.g1{ left:-220px; top:-220px; }
-    .glow.g2{
-      right:-240px; top:140px;
-      opacity:.25;
-      animation-duration: 18s;
-    }
-    .glow.g3{
-      left:20%; bottom:-300px;
-      opacity:.18;
-      animation-duration: 20s;
-    }
-    @keyframes drift{
-      from{ transform: translate3d(0,0,0) scale(1); }
-      to{ transform: translate3d(40px,-22px,0) scale(1.06); }
-    }
-
-    .wrap{
-      width:min(1120px, calc(100% - 40px));
-      margin:0 auto;
-      padding: 28px 0 80px;
+    .kyrpanel{
+      width:min(860px, 92vw);
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(21,24,33,.75), rgba(16,19,26,.82));
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: 0 22px 70px rgba(0,0,0,.55);
       position:relative;
       z-index:1;
     }
-
-    /* NAV */
-    .nav{
-      position:sticky;
-      top:14px;
-      z-index:10;
+    .kyrhead{
       display:flex;
-      align-items:center;
       justify-content:space-between;
-      padding: 12px 14px;
-      border:1px solid var(--line);
-      border-radius: calc(var(--r) + 8px);
-      background: rgba(6,8,12,.62);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 40px rgba(0,0,0,.45);
-    }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-weight: 850;
-      letter-spacing:.08em;
-    }
-    .sig{
-      width: 36px; height: 20px;
-      border:1px solid rgba(255,255,255,.18);
-      border-radius: 6px;
-      position:relative;
-      overflow:hidden;
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.2));
-    }
-    .sig::before{
-      content:"";
-      position:absolute;
-      left:-30%;
-      top:-60%;
-      width: 70%;
-      height: 220%;
-      background: linear-gradient(90deg, transparent, rgba(255,106,0,.55), transparent);
-      transform: rotate(18deg);
-      opacity:.65;
-      animation: sweep 2.8s ease-in-out infinite;
-    }
-    @keyframes sweep{
-      0%{ left:-60%; opacity:.1; }
-      40%{ opacity:.75; }
-      100%{ left:120%; opacity:.1; }
-    }
-    .navlinks{
-      display:flex;
-      align-items:center;
       gap:10px;
+      align-items:baseline;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--mono);
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .kyrhead b{
+      color: var(--text);
+      font-weight: 900;
+      letter-spacing:.10em;
+    }
+
+    .kyrbody{
+      padding: 18px 16px 16px;
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 14px;
+      align-items:end;
+    }
+
+    .kyrtitle{
+      margin:0;
+      font-weight: 900;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      font-size: clamp(30px, 4.2vw, 44px);
+      line-height:1.05;
+    }
+    .kyrsub{
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-family: var(--mono);
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      font-size: 11px;
+      line-height:1.7;
+    }
+
+    .kyrbox{
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.14);
+      border-radius: 12px;
+      overflow:hidden;
+    }
+    .kyrboxhead{
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      font-family: var(--mono);
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-size: 10px;
+      color: var(--muted);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .status{
+      color: rgba(200,180,138,.90);
+    }
+    .kyrboxbody{
+      padding: 12px;
       font-family: var(--mono);
       font-size: 12px;
+      line-height: 1.7;
       color: var(--muted);
-      letter-spacing:.06em;
+      white-space:pre-wrap;
+      min-height: 110px;
     }
-    .pill{
-      padding: 8px 10px;
-      border: 1px solid transparent;
-      border-radius: 999px;
-      transition: 160ms ease;
-    }
-    .pill:hover{
-      border-color: var(--line);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      text-decoration:none;
-    }
-    .cta{
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,106,0,.45);
-      background: linear-gradient(90deg, rgba(255,106,0,.22), rgba(255,255,255,.04));
-      color: var(--text);
-      box-shadow: 0 10px 26px rgba(255,106,0,.10);
-    }
-    .cta:hover{ text-decoration:none; filter: brightness(1.1); }
 
-    /* HERO */
-    .hero{
-      margin-top: 22px;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: calc(var(--r) + 12px);
-      background:
-        radial-gradient(900px 260px at 25% 0%, rgba(255,106,0,.16), transparent 62%),
-        radial-gradient(900px 260px at 80% 0%, rgba(216,196,163,.08), transparent 62%),
-        linear-gradient(180deg, rgba(18,28,44,.55), rgba(10,14,22,.45));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      position:relative;
-    }
-    .hero::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        linear-gradient(90deg, transparent, rgba(255,106,0,.18), transparent);
-      opacity:.12;
-      transform: skewX(-12deg);
-      pointer-events:none;
-    }
-    .hero-inner{
-      position:relative;
-      padding: 36px 26px 24px;
+    .actions{
       display:grid;
-      grid-template-columns: 1.35fr .65fr;
-      gap: 18px;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
     }
 
-    .kicker{
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: .22em;
-      color: rgba(255,255,255,.72);
-      text-transform: uppercase;
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .kicker .line{
-      height:1px;
-      flex:1;
-      background: linear-gradient(90deg, rgba(255,106,0,.55), rgba(255,255,255,.06));
-      opacity:.8;
-    }
-
-    h1{
-      margin: 10px 0 10px;
-      font-size: clamp(34px, 4.2vw, 58px);
-      line-height: 1.02;
-      letter-spacing: -0.03em;
-    }
-    .sub{
-      margin: 0 0 18px;
-      max-width: 66ch;
-      color: var(--muted);
-      line-height: 1.65;
-      font-size: 15.5px;
-    }
-
-    .actions{ display:flex; gap:10px; flex-wrap:wrap; }
     .btn{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      gap:10px;
-      padding: 11px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.04);
-      transition: 180ms ease;
-      font-weight: 700;
-    }
-    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); text-decoration:none; }
-    .btn.primary{
-      border-color: rgba(255,106,0,.55);
-      background: linear-gradient(90deg, rgba(255,106,0,.26), rgba(255,255,255,.04));
-      box-shadow: 0 16px 40px rgba(255,106,0,.10);
-    }
-    .key{
-      font-family: var(--mono);
-      font-size: 12px;
-      padding: 2px 7px;
-      border-radius: 8px;
+      padding: 12px 12px;
+      border-radius: 10px;
       border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      color: rgba(255,255,255,.74);
-    }
-
-    /* SIDE PANEL */
-    .side{
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: var(--r);
-      background: rgba(0,0,0,.16);
-      padding: 14px;
-      display:flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .label{
-      font-family: var(--mono);
-      letter-spacing: .18em;
-      font-size: 11px;
-      color: rgba(255,255,255,.70);
-      text-transform: uppercase;
-    }
-    .meter{
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 14px;
-      padding: 10px;
-      background: rgba(255,255,255,.03);
-    }
-    .bar{
-      height: 10px;
-      width: 68%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(255,106,0,.95), rgba(255,138,42,.75), rgba(216,196,163,.60));
-      box-shadow: 0 12px 32px rgba(255,106,0,.18);
-      transition: width 320ms ease;
-    }
-    .statrow{
-      display:flex;
-      justify-content: space-between;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    .sysbox{
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 14px;
-      padding: 10px;
       background: rgba(0,0,0,.12);
+      color: var(--text);
       font-family: var(--mono);
-      font-size: 12px;
-      color: rgba(255,255,255,.72);
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-weight: 900;
+      font-size: 11px;
+      cursor:pointer;
+      transition: border-color var(--t) linear, background var(--t) linear, transform var(--t) linear;
+      user-select:none;
+    }
+    .btn:hover{
+      border-color: rgba(200,180,138,.28);
+      transform: translateY(-1px);
+    }
+    .btn.primary{
+      border-color: rgba(255,106,42,.55);
+      background: rgba(255,106,42,.10);
+    }
+    .btn.primary:hover{
+      border-color: rgba(255,106,42,.85);
+      background: rgba(255,106,42,.14);
+    }
+    .btn.pulse{
+      border-color: rgba(255,106,42,.65);
+      background: rgba(255,106,42,.12);
+      box-shadow: 0 0 0 3px rgba(255,106,42,.10);
+      animation: pulse 1.45s linear infinite;
+    }
+    @keyframes pulse{
+      0%,100%{ opacity:.92; }
+      50%{ opacity:1; }
+    }
+
+    .note{
+      margin-top: 10px;
+      color: rgba(200,180,138,.84);
+      font-family: var(--mono);
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      font-size: 10px;
       line-height: 1.6;
     }
-    .sysbox b{ color: rgba(255,255,255,.9); font-weight:700; }
-    .sysbox .dot{
-      display:inline-block;
-      width:8px; height:8px;
-      border-radius:99px;
-      background: rgba(255,106,0,.9);
-      box-shadow: 0 0 0 3px rgba(255,106,0,.12);
-      margin-right: 8px;
-      vertical-align: middle;
-    }
 
-    /* SECTION GRID */
-    .grid{
-      margin-top: 18px;
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 14px;
+    /* ---------- MAIN SITE SHELL (placeholder) ---------- */
+    .site{
+      display:none;
+      min-height:100vh;
+      padding: 18px 16px 64px;
+      max-width: var(--max);
+      margin: 0 auto;
     }
-    .card{
-      grid-column: span 6;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: var(--r);
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.14));
-      padding: 16px;
-      box-shadow: 0 14px 44px rgba(0,0,0,.35);
-      position:relative;
-      overflow:hidden;
-    }
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: radial-gradient(500px 140px at 20% 0%, rgba(255,106,0,.10), transparent 62%);
-      opacity:.8;
-      pointer-events:none;
-    }
-    .card > *{ position:relative; }
-
-    .card h3{
-      margin:0 0 6px;
-      font-size: 15.5px;
-      letter-spacing: -0.01em;
-      text-transform: uppercase;
-    }
-    .card p{
-      margin:0;
-      color: var(--muted);
-      line-height:1.65;
-      font-size: 14px;
-    }
-    .chips{
+    .site.on{ display:block; }
+    .topbar{
       display:flex;
-      flex-wrap:wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    .chip{
-      font-family: var(--mono);
-      font-size: 12px;
-      color: rgba(255,255,255,.74);
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 999px;
-      padding: 6px 10px;
-      background: rgba(0,0,0,.18);
-    }
-    .chip.accent{
-      border-color: rgba(255,106,0,.42);
-      background: rgba(255,106,0,.10);
-    }
-
-    /* PROJECTS */
-    .projects{
-      margin-top: 16px;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: calc(var(--r) + 10px);
-      background: rgba(255,255,255,.03);
-      padding: 16px;
-    }
-    .projects-head{
-      display:flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-    .projects-head h2{
-      margin:0;
-      font-size: 18px;
-      letter-spacing: -0.01em;
-      text-transform: uppercase;
-    }
-    .projects-head span{
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing:.06em;
-    }
-    .projgrid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-    .proj{
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: var(--r);
-      background:
-        radial-gradient(360px 160px at 20% 0%, rgba(255,106,0,.12), transparent 62%),
-        linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.16));
-      padding: 14px;
-      transition: 200ms ease;
-      position:relative;
-      overflow:hidden;
-    }
-    .proj:hover{
-      transform: translateY(-2px);
-      border-color: rgba(255,106,0,.35);
-      box-shadow: 0 18px 50px rgba(0,0,0,.42);
-      text-decoration:none;
-    }
-    .proj-title{
-      display:flex;
+      justify-content:space-between;
+      gap:10px;
       align-items:center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 6px;
+      padding: 10px 0 16px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
     }
-    .proj-title strong{
-      font-size: 14px;
-      letter-spacing:.02em;
-      text-transform: uppercase;
-    }
-    .tag{
+    .brand{
       font-family: var(--mono);
-      font-size: 11px;
-      color: rgba(255,255,255,.74);
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.16);
-    }
-    .tag.hot{
-      border-color: rgba(255,106,0,.42);
-      background: rgba(255,106,0,.10);
-    }
-    .proj p{
-      margin:0;
-      font-size: 13px;
-      color: var(--muted);
-      line-height:1.55;
-    }
-
-    /* FOOTER */
-    .sep{ height:1px; background: rgba(255,255,255,.12); margin-top: 16px; }
-    footer{
-      margin-top: 18px;
-      padding: 22px 6px 0;
-      color: rgba(255,255,255,.56);
-      font-family: var(--mono);
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      font-weight: 900;
       font-size: 12px;
-      display:flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      letter-spacing:.04em;
     }
-
-    /* RESPONSIVE */
-    @media (max-width: 880px){
-      .hero-inner{ grid-template-columns: 1fr; }
-      .card{ grid-column: span 12; }
-      .projgrid{ grid-template-columns: 1fr; }
+    .session{
+      font-family: var(--mono);
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .panel{
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.14);
+      padding: 14px;
+    }
+    .panel h2{
+      margin:0 0 10px;
+      font-family: var(--mono);
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .panel p{
+      margin:0;
+      color: var(--muted);
+      line-height: 1.7;
     }
   </style>
 </head>
 
 <body>
-  <div class="scanlines"></div>
-  <div class="glow g1"></div>
-  <div class="glow g2"></div>
-  <div class="glow g3"></div>
+  <!-- KYRAX ONBOARDING -->
+  <main class="kyrwrap" id="kyrwrap">
+    <section class="kyrpanel" aria-label="KYRAX onboarding">
+      <header class="kyrhead">
+        <span><b>KYRAX</b> :: ENTRY SCREEN</span>
+        <span>STATUS: <b id="kyrStatus">UNDEFINED</b></span>
+      </header>
 
-  <div class="wrap">
-    <nav class="nav">
-      <div class="brand">
-        <span class="sig" aria-hidden="true"></span>
-        <span>SATCORP</span>
-      </div>
-      <div class="navlinks">
-        <a class="pill" href="#systems">systems</a>
-        <a class="pill" href="#services">services</a>
-        <a class="pill" href="#signal">signal</a>
-        <a class="cta" href="https://github.com/" target="_blank" rel="noreferrer">github ↗</a>
-      </div>
-    </nav>
-
-    <section class="hero" id="top">
-      <div class="hero-inner">
+      <div class="kyrbody">
         <div>
-          <div class="kicker">
-            <span>ORBITAL / TACTICAL / MINIMAL</span>
-            <span class="line" aria-hidden="true"></span>
-          </div>
-
-          <h1>Command-grade systems for hostile environments.</h1>
-          <p class="sub">
-            SATCORP delivers hardened telemetry, secure comms, and field-ready software.
-            Built for sand, shadow, and signal loss — with controlled ember highlights.
-          </p>
-
-          <div class="actions">
-            <a class="btn primary" href="#systems">View systems <span class="key">↴</span></a>
-            <a class="btn" href="#services">Request brief <span class="key">B</span></a>
-            <button class="btn" id="pulseBtn" type="button">Pulse signal <span class="key">S</span></button>
+          <h1 class="kyrtitle">KYRAX</h1>
+          <p class="kyrsub">SATCORP ENTRY / ONBOARDING INTERFACE</p>
+          <div class="note">
+            Options are present. Behavior is not defined yet.
           </div>
         </div>
 
-        <aside class="side" aria-label="Operational status">
-          <div class="label">Operational status</div>
-          <div class="meter">
-            <div class="bar" id="bar"></div>
-            <div class="statrow">
-              <span id="statLabel">LINK STABLE</span>
-              <span id="statPct">68%</span>
+        <div>
+          <div class="kyrbox">
+            <div class="kyrboxhead">
+              <span>OPERATOR OPTIONS</span>
+              <span class="status" id="kyrMsg">Awaiting input</span>
+            </div>
+            <div class="kyrboxbody" id="kyrLog">
+[KYRAX] Onboarding loaded.
+[KYRAX] Choose an option to proceed.
             </div>
           </div>
 
-          <div class="label">Telemetry</div>
-          <div class="sysbox">
-            <div><span class="dot"></span><b>Uplink:</b> <span id="uplink">AES-256 / ACTIVE</span></div>
-            <div><b>Sector:</b> <span id="sector">DUST-VALLEY</span></div>
-            <div><b>Beacon:</b> <span id="beacon">EMBER-03</span></div>
-            <div><b>Seed:</b> <span id="seed">#5A1C</span></div>
+          <div class="actions">
+            <button class="btn" data-act="login" type="button">LOG IN</button>
+            <button class="btn" data-act="signup" type="button">SIGN UP</button>
+            <button class="btn primary" data-act="guest" type="button">VIEW AS GUEST</button>
+            <button class="btn pulse" data-act="pulse" type="button">PULSΞ</button>
           </div>
-        </aside>
-      </div>
-    </section>
 
-    <section class="grid" id="systems">
-      <div class="card">
-        <h3>Systems</h3>
-        <p>
-          Modular components designed for deployment under constraints: limited power,
-          degraded networks, and high-stakes visibility.
-        </p>
-        <div class="chips">
-          <span class="chip accent">TACTICAL UI</span>
-          <span class="chip">TELEMETRY</span>
-          <span class="chip">EDGE NODES</span>
-          <span class="chip">ENCRYPTED CACHE</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Services</h3>
-        <p>
-          Integration, hardening, and rapid iteration. We ship with discipline:
-          minimal surfaces, controlled glow, maximum clarity.
-        </p>
-        <div class="chips">
-          <span class="chip">SECURE COMMS</span>
-          <span class="chip accent">INCIDENT READY</span>
-          <span class="chip">FIELD TRAINING</span>
-          <span class="chip">DEPLOYMENT</span>
+          <div class="note">
+            Current: selections move to main site shell (placeholder).
+          </div>
         </div>
       </div>
     </section>
+  </main>
 
-    <section class="projects" id="signal">
-      <div class="projects-head">
-        <h2>Signal modules</h2>
-        <span id="clock">loading time…</span>
-      </div>
+  <!-- MAIN SITE (placeholder) -->
+  <section class="site" id="site">
+    <div class="topbar">
+      <div class="brand">SATCORP</div>
+      <div class="session" id="session">SESSION: —</div>
+    </div>
 
-      <div class="projgrid">
-        <a class="proj" href="#" onclick="return false;">
-          <div class="proj-title">
-            <strong>EMBERLINK</strong>
-            <span class="tag hot">SECURE</span>
-          </div>
-          <p>Encrypted uplink layer designed to tolerate packet loss and hostile routing.</p>
-        </a>
+    <div class="panel">
+      <h2>MAIN WEBSITE</h2>
+      <p>
+        This is the main site shell. The onboarding selection was stored so we can define
+        real behavior later (login/signup/guest/pulsΞ routing).
+      </p>
+    </div>
 
-        <a class="proj" href="#" onclick="return false;">
-          <div class="proj-title">
-            <strong>DUSTMAP</strong>
-            <span class="tag">NAV</span>
-          </div>
-          <p>Offline-first mapping UI with resilient sync and controlled visual noise.</p>
-        </a>
-
-        <a class="proj" href="#" onclick="return false;">
-          <div class="proj-title">
-            <strong>STEELLOG</strong>
-            <span class="tag">OPS</span>
-          </div>
-          <p>Audit-grade logging pipeline with tamper-evident receipts and rollups.</p>
-        </a>
-      </div>
-    </section>
-
-    <div class="sep"></div>
-
-    <section class="grid" id="services">
-      <div class="card" style="grid-column: span 12;">
-        <h3>Request a brief</h3>
-        <p>
-          Replace this section with your email, intake form, or a link to a booking page.
-          For GitHub Pages, you can also link to a Google Form or a simple mailto.
-        </p>
-        <div class="chips">
-          <a class="chip accent" href="mailto:you@domain.com">you@domain.com</a>
-          <a class="chip" href="https://github.com/" target="_blank" rel="noreferrer">GITHUB</a>
-          <a class="chip" href="#top">BACK TO TOP</a>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      <span>© <span id="year"></span> SATCORP • tactical systems</span>
-      <span>hotkey: press <span class="key">S</span> to pulse</span>
-    </footer>
-  </div>
+    <div class="panel">
+      <h2>STORED SELECTION</h2>
+      <p id="stored">—</p>
+    </div>
+  </section>
 
   <script>
-    const bar = document.getElementById("bar");
-    const statLabel = document.getElementById("statLabel");
-    const statPct = document.getElementById("statPct");
-    const uplink = document.getElementById("uplink");
-    const sector = document.getElementById("sector");
-    const beacon = document.getElementById("beacon");
-    const seed = document.getElementById("seed");
+    // Minimal behavior (no assumptions beyond requirements):
+    // - show KYRAX onboarding first
+    // - allow selecting options
+    // - store selection
+    // - proceed to main site shell (placeholder)
 
-    const labels = ["LINK STABLE", "SIGNAL ACQUIRED", "LOW NOISE", "ROUTE CLEAN", "SYNC READY"];
-    const sectors = ["DUST-VALLEY", "EMBER-RIDGE", "SABLE-ZONE", "ORBITAL-RING", "SANDSTORM ARC"];
-    const beacons = ["EMBER-01", "EMBER-03", "EMBER-07", "STEEL-02", "SAND-04"];
-    const uplinks = ["AES-256 / ACTIVE", "TLS / ROTATING", "QUIC / HARDENED", "MESH / RELAY", "BURST / SECURE"];
+    const kyrStatus = document.getElementById("kyrStatus");
+    const kyrMsg = document.getElementById("kyrMsg");
+    const kyrLog = document.getElementById("kyrLog");
+    const site = document.getElementById("site");
+    const kyrwrap = document.getElementById("kyrwrap");
+    const session = document.getElementById("session");
+    const stored = document.getElementById("stored");
 
-    function r(n){ return Math.floor(Math.random() * n); }
-    function hex4(){
-      const x = r(0xFFFF).toString(16).toUpperCase().padStart(4,"0");
-      return "#" + x;
+    const KEY = "kyrChoice_v1";
+
+    function log(line){
+      kyrLog.textContent += "\n" + line;
+      kyrLog.scrollTop = kyrLog.scrollHeight;
     }
 
-    function pulse(){
-      const pct = 45 + r(51); // 45..95
-      bar.style.width = pct + "%";
-      statPct.textContent = pct + "%";
-      statLabel.textContent = labels[r(labels.length)];
-      uplink.textContent = uplinks[r(uplinks.length)];
-      sector.textContent = sectors[r(sectors.length)];
-      beacon.textContent = beacons[r(beacons.length)];
-      seed.textContent = hex4();
+    function enterMain(choice){
+      localStorage.setItem(KEY, choice);
 
-      // tiny “signal flash” (controlled)
-      document.body.animate(
-        [{ filter: "brightness(1)" }, { filter: "brightness(1.06)" }, { filter: "brightness(1)" }],
-        { duration: 260, easing: "ease-out" }
-      );
+      // update main shell
+      const label = choice.toUpperCase();
+      session.textContent = "SESSION: " + label;
+      stored.textContent = "kyrChoice_v1 = " + choice;
+
+      // swap screens
+      kyrwrap.style.display = "none";
+      site.classList.add("on");
     }
 
-    document.getElementById("pulseBtn").addEventListener("click", pulse);
-    window.addEventListener("keydown", (e) => {
-      if (e.key.toLowerCase() === "s") pulse();
+    document.querySelectorAll("[data-act]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const act = btn.getAttribute("data-act");
+
+        if (act === "pulse"){
+          kyrStatus.textContent = "PULSΞ: UNDEFINED";
+          kyrMsg.textContent = "PULSΞ pressed (undefined)";
+          log("[KYRAX] PULSΞ pressed. Behavior not defined.");
+          // Still proceed to main shell (placeholder) so the flow remains testable.
+          enterMain("pulse");
+          return;
+        }
+
+        kyrStatus.textContent = "SELECTED";
+        kyrMsg.textContent = "Selected: " + act;
+        log("[KYRAX] Option selected: " + act);
+        enterMain(act);
+      });
     });
 
-    // Clock + year
-    const clock = document.getElementById("clock");
-    const year = document.getElementById("year");
-    year.textContent = new Date().getFullYear();
-    setInterval(() => {
-      const d = new Date();
-      clock.textContent = d.toLocaleString([], {
-        weekday:"short", month:"short", day:"2-digit",
-        hour:"2-digit", minute:"2-digit"
-      });
-    }, 500);
-
-    // Initial pulse
-    pulse();
+    // If you want onboarding every time, leave as-is.
+    // If later you want to skip onboarding after first choice, we can add that rule.
   </script>
 </body>
 </html>
