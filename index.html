@@ -297,9 +297,9 @@
       min-height: 220px;
     }
 
-    /* ===== NEW: SYSTEM NOTES (pulses in/out after standby) ===== */
+    /* ===== CLEANER: SYSTEM NOTES (slower, stays longer, smoother) ===== */
     .sysnotes{
-      padding: 0 clamp(16px, 2vw, 22px) 16px;
+      padding: 10px clamp(16px, 2vw, 22px) 14px;
       font-family: var(--mono);
       font-size: 10px;
       letter-spacing:.18em;
@@ -307,10 +307,10 @@
       color: rgba(183,183,214,.92);
       border-top: 1px solid rgba(37,243,255,.10);
       opacity: 0;
-      transform: translateY(2px);
-      transition: opacity 180ms ease, transform 180ms ease;
+      transform: translateY(3px);
+      transition: opacity 360ms ease, transform 360ms ease; /* slower transition */
       user-select: none;
-      min-height: 20px;
+      min-height: 26px;
     }
     .sysnotes.on{
       opacity: 1;
@@ -346,7 +346,6 @@
       cursor:pointer;
       transition: transform 140ms linear, opacity 140ms linear, border-color 140ms linear;
 
-      /* sublabel layout */
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -537,13 +536,10 @@
   <main class="hud" id="kyrwrap">
     <section class="frame">
       <header class="top">
-        <!-- LEFT: typing header text -->
         <span><b id="welcomeText"></b></span>
-        <!-- STATUS label glyphified -->
         <span>STΛTUS: <b id="kyrStatus">BOOT</b></span>
       </header>
 
-      <!-- Boot progress bar + percent -->
       <div class="bootbar" aria-label="Boot progress">
         <div class="bootlabel">BOOT SEQUENCE</div>
         <div class="track"><div class="fill" id="bootFill"></div></div>
@@ -551,14 +547,12 @@
       </div>
 
       <div class="grid" id="mainGrid">
-        <!-- LEFT BIG PANEL -->
         <div class="panel">
           <div class="idRow">
             <div class="logo">
               <img src="kyrax-wolf.png" alt="" onerror="this.style.display='none'">
             </div>
             <div>
-              <!-- SATCORP glyphified -->
               <h1 class="title">SΛTCORP</h1>
               <div class="subtitle">You arrived exactly when expected</div>
             </div>
@@ -584,20 +578,16 @@
           </div>
         </div>
 
-        <!-- RIGHT BIG BOX -->
         <div class="box">
           <div class="boxhead">
-            <!-- SYSTEM TRANSMISSION glyphified -->
             <span>SYSTΞM TRΛNSMISSION</span>
             <span id="kyrMsg">BOOTING</span>
           </div>
 
           <div class="log" id="kyrLog"></div>
 
-          <!-- NEW: pulsing system notes (after standby only) -->
           <div class="sysnotes" id="sysNotes" aria-live="polite"></div>
 
-          <!-- UPDATED BUTTONS: sublabels added -->
           <div class="actions locked" id="actions">
             <button class="btn" data-act="login" type="button">
               AUTHENTICATE
@@ -624,7 +614,6 @@
     </section>
   </main>
 
-  <!-- MISSION SELECT SHELL -->
   <section class="site" id="site">
     <div class="shell">
       <div class="shellTop">
@@ -699,10 +688,8 @@
       }
     }
 
-    // Boot bar fills FIRST, while rest of panel stays hidden
     async function bootBarFill(){
       setProgress(0);
-      // "normal fast" speed: ~1.6s total
       const durationMs = 1600;
       const stepMs = 30;
       const steps = Math.ceil(durationMs / stepMs);
@@ -715,7 +702,7 @@
       setProgress(100);
     }
 
-    // ===== SYSTEM NOTES: starts after standby, pulses in/out, cycles lines =====
+    // ===== SYSTEM NOTES: cleaner loop, slower, stays longer =====
     let sysTimer = null;
 
     function stopSystemNotes(){
@@ -735,28 +722,32 @@
 
       let i = 0;
 
-      // timing
-      const SHOW_MS = 1400;   // visible time
-      const HIDE_MS = 650;    // hidden time
-      const FADE_MS = 180;    // must match CSS transition
+      // slower / longer
+      const SHOW_MS = 2400;   // visible longer
+      const HIDE_MS = 900;    // hidden a bit longer
+      const FADE_MS = 360;    // matches CSS transition
 
-      function render(){
+      function setLine(){
         sysNotes.innerHTML = 'SYSTΞM NOTΞS: <b>' + lines[i] + '</b>';
       }
 
       function show(){
-        render();
+        setLine();
         requestAnimationFrame(() => sysNotes.classList.add("on"));
       }
 
       function hide(){
         sysNotes.classList.remove("on");
+        // cleaner: clear text after fade so it feels like a single "delete"
+        setTimeout(() => {
+          if (!sysNotes.classList.contains("on")) sysNotes.textContent = "";
+        }, FADE_MS);
       }
 
-      // start
+      // start immediately
       show();
 
-      // loop: show -> hide -> wait -> next -> show
+      // loop cycle
       sysTimer = setInterval(() => {
         hide();
         setTimeout(() => {
@@ -766,12 +757,9 @@
       }, SHOW_MS + FADE_MS + HIDE_MS);
     }
 
-    // After bar fill, show the rest, then run typing sequence in log
     async function runSequence(){
-      // WELCOME string glyphified
       await typeText(welcomeTextEl, "WΞLCOMΞ TO SΛTCORP", 55);
 
-      // Show main panel contents now
       mainGrid.classList.add("show");
 
       const line1Base = "[KYRAX] Uplink negotiation…";
@@ -787,7 +775,6 @@
       operatorReadout.textContent = "UNASSIGNED";
       kyrLog.textContent = "";
 
-      // Type line1Base
       let out = "";
       for (const c of line1Base){
         out += c;
@@ -795,12 +782,10 @@
         await sleep(TYPE_SPEED);
       }
 
-      // Pause then append STABLE instantly
       await sleep(PAUSE_BEFORE_STABLE);
       kyrLog.textContent = line1Base + " STABLE\n";
       uplinkReadout.textContent = "STABLE";
 
-      // Type line2 under it
       await sleep(PAUSE_BEFORE_STANDBY);
       out = "";
       for (const c of line2){
@@ -809,12 +794,11 @@
         await sleep(TYPE_SPEED);
       }
 
-      // Standby + Idle glyphified where requested
       kyrStatus.textContent = "STΛNDBY";
       kyrMsg.textContent = "IDLΞ";
       actions.classList.remove("locked");
 
-      // Start pulsing notes ONLY after standby
+      // start ONLY after standby
       startSystemNotesAfterStandby();
     }
 
@@ -873,14 +857,12 @@
       `).join("");
     }
 
-    // Orchestrate: fill bar -> type header -> show panel -> run sequence
     (async ()=>{
       mainGrid.classList.remove("show");
       await bootBarFill();
       await runSequence();
     })();
 
-    // Buttons
     document.querySelectorAll("[data-act]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
         if (actions.classList.contains("locked")) return;
