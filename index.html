@@ -307,6 +307,7 @@
       .actions{ grid-template-columns: 1fr; }
     }
 
+    /* ===== UPDATED: button supports sublabel ===== */
     .btn{
       padding: clamp(14px, 1.6vw, 18px);
       border-radius: 16px;
@@ -320,10 +321,27 @@
       color: var(--text);
       cursor:pointer;
       transition: transform 140ms linear, opacity 140ms linear, border-color 140ms linear;
+
+      /* sublabel layout */
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap: 4px;
+      line-height:1.05;
     }
     .btn:hover{
       transform: translateY(-1px);
       border-color: rgba(37,243,255,.44);
+    }
+
+    .btn .sub{
+      font-size: 9px;
+      letter-spacing:.22em;
+      opacity:.65;
+      font-weight:600;
+      line-height:1;
+      text-transform:uppercase;
     }
 
     .btn.primary{
@@ -552,12 +570,27 @@
 
           <div class="log" id="kyrLog"></div>
 
+          <!-- UPDATED BUTTONS: sublabels added -->
           <div class="actions locked" id="actions">
-            <button class="btn" data-act="login" type="button">AUTHENTICATE</button>
-            <!-- NEW OPERATOR glyphified -->
-            <button class="btn" data-act="signup" type="button">NΞW OPΞRΛTOR</button>
-            <button class="btn primary" data-act="guest" type="button">SIMULATION MODE</button>
-            <button class="btn alert" data-act="pulse" type="button">PULSΞ</button>
+            <button class="btn" data-act="login" type="button">
+              AUTHENTICATE
+              <span class="sub">SIGN IN</span>
+            </button>
+
+            <button class="btn" data-act="signup" type="button">
+              NΞW OPΞRΛTOR
+              <span class="sub">SIGN UP</span>
+            </button>
+
+            <button class="btn primary" data-act="guest" type="button">
+              SIMULATION MODE
+              <span class="sub">JOIN AS GUEST</span>
+            </button>
+
+            <button class="btn alert" data-act="pulse" type="button">
+              PULSΞ
+              <span class="sub">LIVE SENTIENT RADIO</span>
+            </button>
           </div>
         </div>
       </div>
