@@ -156,6 +156,38 @@
     margin-top: 0.5rem;
     letter-spacing: 0.15em;
   }
+
+  .dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 52px);
+    grid-template-rows: repeat(3, 52px);
+    gap: 4px;
+    margin-top: 14px;
+  }
+
+  .dpad button {
+    background: rgba(0,255,65,0.08);
+    border: 1px solid var(--mid-green);
+    color: var(--green);
+    font-size: 1.4rem;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  .dpad button:active {
+    background: rgba(0,255,65,0.25);
+    box-shadow: 0 0 10px rgba(0,255,65,0.4);
+  }
+
+  .dpad .empty { background: transparent; border: none; pointer-events: none; }
+
+  .overlay { cursor: pointer; }
 </style>
 </head>
 <body class="crt-flicker">
@@ -178,7 +210,19 @@
   </div>
 </div>
 
-<div class="footer">↑↓←→ OR WASD &nbsp;|&nbsp; SPACE = PAUSE &nbsp;|&nbsp; ESC = RESTART</div>
+<div class="dpad">
+  <div class="empty"></div>
+  <button id="btn-up">▲</button>
+  <div class="empty"></div>
+  <button id="btn-left">◀</button>
+  <button id="btn-pause">⏸</button>
+  <button id="btn-right">▶</button>
+  <div class="empty"></div>
+  <button id="btn-down">▼</button>
+  <div class="empty"></div>
+</div>
+
+<div class="footer">TAP SCREEN TO START &nbsp;|&nbsp; USE D-PAD OR WASD</div>
 
 <script>
 const canvas = document.getElementById('c');
@@ -424,25 +468,34 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Touch support
-let touchStart = null;
-canvas.addEventListener('touchstart', e => { touchStart = e.touches[0]; e.preventDefault(); }, {passive:false});
-canvas.addEventListener('touchend', e => {
-  if (!touchStart) return;
-  const dx = e.changedTouches[0].clientX - touchStart.clientX;
-  const dy = e.changedTouches[0].clientY - touchStart.clientY;
-  if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
-    if (state === 'start' || state === 'dead') startGame();
-    else pauseGame();
-    return;
-  }
+// Tap overlay to start/resume
+overlay.addEventListener('click', () => {
+  if (state === 'start' || state === 'dead') startGame();
+  else if (state === 'paused') pauseGame();
+});
+
+// D-pad buttons
+function pressDir(nd) {
+  if (state === 'start' || state === 'dead') startGame();
   if (state !== 'playing') return;
-  let nd;
-  if (Math.abs(dx) > Math.abs(dy)) nd = dx > 0 ? {x:1,y:0} : {x:-1,y:0};
-  else nd = dy > 0 ? {x:0,y:1} : {x:0,y:-1};
   if (!(nd.x === -dir.x && nd.y === -dir.y)) nextDir = nd;
-  e.preventDefault();
-}, {passive:false});
+}
+
+const btnMap = {
+  'btn-up':    {x:0,y:-1},
+  'btn-down':  {x:0,y:1},
+  'btn-left':  {x:-1,y:0},
+  'btn-right': {x:1,y:0},
+};
+
+Object.entries(btnMap).forEach(([id, nd]) => {
+  const btn = document.getElementById(id);
+  btn.addEventListener('touchstart', e => { e.preventDefault(); pressDir(nd); }, {passive:false});
+  btn.addEventListener('mousedown', e => { e.preventDefault(); pressDir(nd); });
+});
+
+document.getElementById('btn-pause').addEventListener('touchstart', e => { e.preventDefault(); if (state === 'playing' || state === 'paused') pauseGame(); }, {passive:false});
+document.getElementById('btn-pause').addEventListener('mousedown', e => { e.preventDefault(); if (state === 'playing' || state === 'paused') pauseGame(); });
 
 // Animate food pulse even when paused
 function animLoop() {
