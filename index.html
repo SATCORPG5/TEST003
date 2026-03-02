@@ -3,510 +3,618 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SNAKE.EXE</title>
+<title>Discord Server Architecture \u2014 ANU CORPS</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:wght@100;200;300;400;700;900&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap');
-
   :root {
-    --green: #00ff41;
-    --dim-green: #003b10;
-    --mid-green: #00aa2c;
-    --bg: #020d04;
-    --grid: 20;
+    --bg: #07080d;
+    --bg2: #0d0f18;
+    --bg3: #111422;
+    --line: #1e2235;
+    --sat: #00e5ff;
+    --kira: #b06aff;
+    --pulse: #ff3c6e;
+    --kyrax: #ffd000;
+    --anu: #00ff9d;
+    --text: #c8cfe8;
+    --dim: #4a5070;
+    --white: #eef0fa;
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
+  * { margin:0; padding:0; box-sizing:border-box; }
   body {
     background: var(--bg);
-    color: var(--green);
-    font-family: 'Share Tech Mono', monospace;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300;
     min-height: 100vh;
-    overflow: hidden;
-    position: relative;
+    overflow-x: hidden;
   }
 
+  /* GRID BACKGROUND */
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,255,65,0.03) 2px,
-      rgba(0,255,65,0.03) 4px
-    );
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
     pointer-events: none;
-    z-index: 100;
+    z-index: 0;
   }
 
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.8) 100%);
-    pointer-events: none;
-    z-index: 101;
+  .container {
+    position: relative; z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
   }
 
-  .crt-flicker {
-    animation: flicker 8s infinite;
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: 60px 0 48px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 56px;
   }
-
-  @keyframes flicker {
-    0%, 95%, 100% { opacity: 1; }
-    96% { opacity: 0.85; }
-    97% { opacity: 1; }
-    98% { opacity: 0.9; }
-  }
-
-  h1 {
-    font-family: 'VT323', monospace;
-    font-size: 4rem;
-    letter-spacing: 0.3em;
-    text-shadow: 0 0 20px var(--green), 0 0 40px var(--green);
-    margin-bottom: 4px;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { text-shadow: 0 0 20px var(--green), 0 0 40px var(--green); }
-    50% { text-shadow: 0 0 30px var(--green), 0 0 60px var(--green), 0 0 80px var(--green); }
-  }
-
-  .stats-bar {
-    display: flex;
-    gap: 3rem;
-    margin-bottom: 12px;
-    font-size: 0.9rem;
-    letter-spacing: 0.15em;
-    color: var(--mid-green);
-  }
-
-  .stats-bar span { color: var(--green); }
-
-  .canvas-wrap {
-    position: relative;
-    border: 2px solid var(--mid-green);
-    box-shadow: 0 0 30px rgba(0,255,65,0.3), inset 0 0 30px rgba(0,255,65,0.05);
-  }
-
-  canvas {
-    display: block;
-    image-rendering: pixelated;
-  }
-
-  .overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(2, 13, 4, 0.88);
-    font-family: 'VT323', monospace;
-  }
-
-  .overlay h2 {
-    font-size: 3.5rem;
-    letter-spacing: 0.2em;
-    text-shadow: 0 0 20px var(--green);
-    margin-bottom: 1rem;
-  }
-
-  .overlay p {
+  .corp-tag {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--mid-green);
-    letter-spacing: 0.1em;
-    margin-bottom: 0.4rem;
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--white);
+    line-height: 1;
+  }
+  header h1 span.sat { color: var(--sat); }
+  header h1 span.kira { color: var(--kira); }
+  header h1 span.pulse { color: var(--pulse); }
+  .header-sub {
+    margin-top: 16px;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--dim);
+    font-family: 'Share Tech Mono', monospace;
   }
 
-  .blink {
-    animation: blink 1s step-end infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  .start-hint {
-    margin-top: 1.5rem;
-    font-size: 1.4rem;
-    letter-spacing: 0.2em;
-    color: var(--green);
-  }
-
-  .footer {
-    margin-top: 10px;
-    font-size: 0.75rem;
-    color: var(--dim-green);
-    letter-spacing: 0.15em;
-  }
-
-  .high-score-display {
-    font-size: 1.2rem;
-    color: var(--mid-green);
-    margin-top: 0.5rem;
-    letter-spacing: 0.15em;
-  }
-
-  .dpad {
-    display: grid;
-    grid-template-columns: repeat(3, 52px);
-    grid-template-rows: repeat(3, 52px);
+  /* SERVER TABS */
+  .server-tabs {
+    display: flex;
     gap: 4px;
-    margin-top: 14px;
-  }
-
-  .dpad button {
-    background: rgba(0,255,65,0.08);
-    border: 1px solid var(--mid-green);
-    color: var(--green);
-    font-size: 1.4rem;
-    cursor: pointer;
+    margin-bottom: 40px;
+    background: var(--bg2);
+    padding: 4px;
     border-radius: 4px;
+    border: 1px solid var(--line);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 3px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--dim);
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { color: var(--white); background: var(--line); }
+  .tab-btn.active[data-server="satcorp"] { background: rgba(0,229,255,0.1); color: var(--sat); border: 1px solid rgba(0,229,255,0.3); }
+  .tab-btn.active[data-server="kira"] { background: rgba(176,106,255,0.1); color: var(--kira); border: 1px solid rgba(176,106,255,0.3); }
+  .tab-btn.active[data-server="pulse"] { background: rgba(255,60,110,0.1); color: var(--pulse); border: 1px solid rgba(255,60,110,0.3); }
+
+  /* SERVER PANEL */
+  .server-panel { display: none; }
+  .server-panel.active { display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+
+  /* SIDEBAR (Discord-style) */
+  .discord-sidebar {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .server-header-bar {
+    padding: 14px 16px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--line);
     display: flex;
     align-items: center;
-    justify-content: center;
-    transition: background 0.1s;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .server-header-bar .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .sat-color { background: var(--sat); box-shadow: 0 0 8px var(--sat); }
+  .kira-color { background: var(--kira); box-shadow: 0 0 8px var(--kira); }
+  .pulse-color { background: var(--pulse); box-shadow: 0 0 8px var(--pulse); }
+
+  .channel-group { padding: 8px 0; }
+  .category-label {
+    padding: 16px 16px 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--dim);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .category-label::after {
+    content: ''; flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .channel-item {
+    padding: 5px 16px 5px 28px;
+    font-size: 13px;
+    color: #8891b0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s;
+    border-radius: 3px;
+    margin: 1px 6px;
+    cursor: default;
+  }
+  .channel-item:hover { background: var(--line); color: var(--text); }
+  .channel-item .ch-prefix {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--dim);
+    flex-shrink: 0;
+  }
+  .channel-item.voice .ch-prefix { color: #3ba55c; }
+  .channel-item.voice { color: #3ba55c; opacity: 0.8; }
+  .channel-item.announce { }
+  .channel-item .badge {
+    margin-left: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+  }
+  .badge-staff { background: rgba(255,208,0,0.15); color: var(--kyrax); }
+  .badge-ops { background: rgba(0,255,157,0.1); color: var(--anu); }
+  .badge-client { background: rgba(255,255,255,0.07); color: #7a8099; }
+
+  /* MAIN CONTENT */
+  .main-content { display: flex; flex-direction: column; gap: 20px; }
+
+  /* ROLES PANEL */
+  .panel {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .panel-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-header span { color: var(--white); }
+
+  /* ROLES GRID */
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .role-section {
+    padding: 20px;
+    border-right: 1px solid var(--line);
+  }
+  .role-section:last-child { border-right: none; }
+  .role-section-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .role-section-title.staff { color: var(--kyrax); }
+  .role-section-title.ops { color: var(--anu); }
+  .role-section-title.clients { color: #7a8099; }
+
+  .role-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .role-item:last-child { border-bottom: none; }
+  .role-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .role-name {
+    font-size: 13px;
+    color: var(--white);
+    font-weight: 400;
+    line-height: 1.3;
+  }
+  .role-desc {
+    font-size: 11px;
+    color: var(--dim);
+    margin-top: 2px;
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 0.5px;
   }
 
-  .dpad button:active {
-    background: rgba(0,255,65,0.25);
-    box-shadow: 0 0 10px rgba(0,255,65,0.4);
+  /* PERMISSIONS TABLE */
+  .perms-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .perms-table th {
+    padding: 10px 16px;
+    text-align: left;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--dim);
+    border-bottom: 1px solid var(--line);
+    font-weight: 400;
+  }
+  .perms-table td {
+    padding: 9px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .perms-table tr:last-child td { border-bottom: none; }
+  .perms-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .perm-check { color: #3ba55c; font-size: 14px; }
+  .perm-cross { color: #ed4245; font-size: 14px; }
+  .perm-view { color: #5865f2; font-size: 13px; }
+  .channel-col { font-family: 'Share Tech Mono', monospace; font-size: 11px; }
+
+  /* KYRAX + ANU STRIP */
+  .special-agents {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .agent-card {
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .agent-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .agent-card.kyrax::before { background: linear-gradient(90deg, var(--kyrax), transparent); }
+  .agent-card.anu::before { background: linear-gradient(90deg, var(--anu), transparent); }
+
+  .agent-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    margin-bottom: 6px;
+  }
+  .agent-tag.kyrax { color: var(--kyrax); }
+  .agent-tag.anu { color: var(--anu); }
+
+  .agent-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .agent-role {
+    font-size: 11px;
+    color: var(--dim);
+    margin-bottom: 14px;
+  }
+  .agent-perms { list-style: none; }
+  .agent-perms li {
+    font-size: 12px;
+    color: var(--text);
+    padding: 4px 0;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .agent-perms li::before {
+    content: '\u203a';
+    color: var(--dim);
+    font-size: 14px;
   }
 
-  .dpad .empty { background: transparent; border: none; pointer-events: none; }
+  /* FOOTER */
+  footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--dim);
+  }
 
-  .overlay { cursor: pointer; }
+  @media (max-width: 900px) {
+    .server-panel.active { grid-template-columns: 1fr; }
+    .discord-sidebar { display: none; }
+    .roles-grid { grid-template-columns: 1fr; }
+    .role-section { border-right: none; border-bottom: 1px solid var(--line); }
+    .special-agents { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
-<body class="crt-flicker">
+<body>
+<div class="container">
+  <header>
+    <div class="corp-tag">// DISCORD SERVER ARCHITECTURE \u00b7 INTERNAL DOCUMENT //</div>
+    <h1>
+      <span class="sat">SAT</span>CORP &nbsp;\u00b7&nbsp;
+      <span class="kira">KI-RA</span> &nbsp;\u00b7&nbsp;
+      PULS<span class="pulse">\u039e</span>
+    </h1>
+    <div class="header-sub">OPERATOR: ANU &nbsp;|&nbsp; INTELLIGENCE: KYRAX &nbsp;|&nbsp; CLASSIFICATION: INTERNAL</div>
+  </header>
 
-<h1>SNAKE.EXE</h1>
-<div class="stats-bar">
-  <div>SCORE: <span id="score">0</span></div>
-  <div>HIGH: <span id="hi">0</span></div>
-  <div>LVL: <span id="level">1</span></div>
-</div>
-
-<div class="canvas-wrap">
-  <canvas id="c" width="400" height="400"></canvas>
-  <div class="overlay" id="overlay">
-    <h2 id="overlay-title">SNAKE.EXE</h2>
-    <p id="overlay-sub">USE ARROW KEYS OR WASD TO MOVE</p>
-    <p>EAT THE FOOD. DON'T HIT THE WALLS.</p>
-    <p>DON'T EAT YOURSELF.</p>
-    <div class="start-hint blink">[ PRESS SPACE OR ENTER TO START ]</div>
+  <!-- TABS -->
+  <div class="server-tabs">
+    <button class="tab-btn active" data-server="satcorp" onclick="switchServer('satcorp')">\u2b21 SATCORP</button>
+    <button class="tab-btn" data-server="kira" onclick="switchServer('kira')">\u25c8 KI-RA STUDIOS</button>
+    <button class="tab-btn" data-server="pulse" onclick="switchServer('pulse')">\u25b7 PULS\u039e</button>
   </div>
-</div>
 
-<div class="dpad">
-  <div class="empty"></div>
-  <button id="btn-up">▲</button>
-  <div class="empty"></div>
-  <button id="btn-left">◀</button>
-  <button id="btn-pause">⏸</button>
-  <button id="btn-right">▶</button>
-  <div class="empty"></div>
-  <button id="btn-down">▼</button>
-  <div class="empty"></div>
-</div>
+  <!-- \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 SATCORP \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 -->
+  <div class="server-panel active" id="panel-satcorp">
+    <div class="discord-sidebar">
+      <div class="server-header-bar">
+        <div class="dot sat-color"></div>
+        SATCORP
+      </div>
 
-<div class="footer">TAP SCREEN TO START &nbsp;|&nbsp; USE D-PAD OR WASD</div>
+      <div class="channel-group">
+        <div class="category-label">SYSTEM</div>
+        <div class="channel-item announce"><span class="ch-prefix">\ud83d\udce2</span> announcements</div>
+        <div class="channel-item"><span class="ch-prefix">#</span> welcome-briefing</div>
+        <div class="channel-item"><span class="ch-prefix">#</span> rules-and-conduct</div>
+        <div class="channel-item"><span class="ch-prefix">#</span> kyrax-status</div>
+      </div>
 
-<script>
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d');
-const overlay = document.getElementById('overlay');
-const scoreEl = document.getElementById('score');
-const hiEl = document.getElementById('hi');
-const levelEl = document.getElementById('level');
-const overlayTitle = document.getElementById('overlay-title');
-const overlaySub = document.getElementById('overlay-sub');
+      <div class="channel-group">
+        <div class="category-label">STAFF COMMAND</div>
+        <div class="channel-item"><span class="ch-prefix">#</span> command-room <span class="badge badge-staff">STAFF</span></div>
+        <div class="channel-item"><span class="ch-prefix">#</span> pipeline-ops <span class="badge badge-staff">STAFF</span></div>
+        <div class="channel-item"><span class="ch-prefix">#</span> kyrax-logs <span class="badge badge-staff">STAFF</span></div>
+        <div class="channel-item"><span class="ch-prefix">#</span> system-debug <span class="badge badge-staff">STAFF</span></div>
+        <div class="channel-item voice"><span class="ch-prefix">\ud83d\udd0a</span> staff-briefing</div>
+      </div>
 
-const CELL = 20;
-const COLS = canvas.width / CELL;
-const ROWS = canvas.height / CELL;
+      <div class="channel-group">
+        <div class="category-label">OPERATORS</div>
+        <div class="channel-item"><span class="ch-prefix">#</span> operator-lounge <span class="badge badge-ops">OPS</span></div>
+        <div class="channel-item"><span class="ch-prefix">#</span> active-projects <span class="badge badge-ops">OPS</span></div>
+        <div class="channel-item"><span class="ch-prefix">#</span> asset-drops <span class="badge badge-ops">OPS</span></div>
+        <div class="channel-item"><span class="ch-prefix">#</span> sop-library <span class="badge badge-ops">OPS</span></div>
+        <div class="channel-item"><span class="ch-prefix">#</span> brand-vault <span class="badge badge-ops">OPS</span></div>
+        <div class="channel-item voice"><span class="ch-prefix">\ud83d\udd0a</span> work-room</div>
+      </div>
 
-let snake, dir, nextDir, food, score, hiScore, level, speed, gameLoop, state, particles;
+      <div class="channel-group">
+        <div class="category-label">CLIENTS</div>
+        <div class="channel-item"><span class="ch-prefix">#</span> client-welcome <span class="badge badge-client">CLIENT</span></div>
+        <div class="channel-item"><span class="ch-prefix">#</span> submit-brief <span class="badge badge-client">CLIENT</span></div>
+        <div class="channel-item"><span class="ch-prefix">#</span> deliverables <span class="badge badge-client">CLIENT</span></div>
+        <div class="channel-item"><span class="ch-prefix">#</span> revision-requests <span class="badge badge-client">CLIENT</span></div>
+        <div class="channel-item"><span class="ch-prefix">#</span> invoices-payments <span class="badge badge-client">CLIENT</span></div>
+        <div class="channel-item"><span class="ch-prefix">#</span> testimonials <span class="badge badge-client">CLIENT</span></div>
+      </div>
 
-hiScore = 0;
+      <div class="channel-group">
+        <div class="category-label">SERVICES SHOWCASE</div>
+        <div class="channel-item"><span class="ch-prefix">#</span> brand-portfolio</div>
+        <div class="channel-item"><span class="ch-prefix">#</span> web-ui-showcase</div>
+        <div class="channel-item"><span class="ch-prefix">#</span> motion-reel</div>
+        <div class="channel-item"><span class="ch-prefix">#</span> service-menu</div>
+      </div>
+    </div>
 
-const GREEN = '#00ff41';
-const MID = '#00aa2c';
-const DIM = '#003b10';
-const RED = '#ff3030';
-const YELLOW = '#ffd700';
+    <div class="main-content">
 
-function init() {
-  snake = [{x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10}];
-  dir = {x: 1, y: 0};
-  nextDir = {x: 1, y: 0};
-  score = 0;
-  level = 1;
-  speed = 120;
-  particles = [];
-  updateUI();
-  placeFood();
-}
+      <!-- Roles -->
+      <div class="panel">
+        <div class="panel-header">// <span>ROLE HIERARCHY</span> // SATCORP</div>
+        <div class="roles-grid">
+          <div class="role-section">
+            <div class="role-section-title staff">\u25b2 STAFF</div>
+            <div class="role-item">
+              <div class="role-dot" style="background:var(--kyrax)"></div>
+              <div>
+                <div class="role-name">KYRAX</div>
+                <div class="role-desc">AI INTELLIGENCE \u00b7 ALL ACCESS</div>
+              </div>
+            </div>
+            <div class="role-item">
+              <div class="role-dot" style="background:var(--anu)"></div>
+              <div>
+                <div class="role-name">ANU [OWNER]</div>
+                <div class="role-desc">SOLE OWNER \u00b7 ADMIN</div>
+              </div>
+            </div>
+            <div class="role-item">
+              <div class="role-dot" style="background:#ff7a3d"></div>
+              <div>
+                <div class="role-name">ARCHITECT</div>
+                <div class="role-desc">SYSTEMS & CREATIVE LEAD</div>
+              </div>
+            </div>
+            <div class="role-item">
+              <div class="role-dot" style="background:#a0a8c8"></div>
+              <div>
+                <div class="role-name">CONCIERGE</div>
+                <div class="role-desc">CLIENT-FACING STAFF</div>
+              </div>
+            </div>
+          </div>
+          <div class="role-section">
+            <div class="role-section-title ops">\u25c6 OPERATORS</div>
+            <div class="role-item">
+              <div class="role-dot" style="background:var(--sat)"></div>
+              <div>
+                <div class="role-name">SENIOR OPERATOR</div>
+                <div class="role-desc">FULL PROJECT ACCESS</div>
+              </div>
+            </div>
+            <div class="role-item">
+              <div class="role-dot" style="background:#0099bb"></div>
+              <div>
+                <div class="role-name">OPERATOR</div>
+                <div class="role-desc">PROJECT CONTRIBUTOR</div>
+              </div>
+            </div>
+            <div class="role-item">
+              <div class="role-dot" style="background:#005566"></div>
+              <div>
+                <div class="role-name">BRAND DESIGNER</div>
+                <div class="role-desc">VISUAL / IDENTITY TRACK</div>
+              </div>
+            </div>
+            <div class="role-item">
+              <div class="role-dot" style="background:#004455"></div>
+              <div>
+                <div class="role-name">WEB ENGINEER</div>
+                <div class="role-desc">WEB / UI TRACK</div>
+              </div>
+            </div>
+            <div class="role-item">
+              <div class="role-dot" style="background:#003344"></div>
+              <div>
+                <div class="role-name">MOTION ARTIST</div>
+                <div class="role-desc">ANIMATION TRACK</div>
+              </div>
+            </div>
+          </div>
+          <div class="role-section">
+            <div class="role-section-title clients">\u25cb CLIENTS</div>
+            <div class="role-item">
+              <div class="role-dot" style="background:#d4af37"></div>
+              <div>
+                <div class="role-name">PRIORITY CLIENT</div>
+                <div class="role-desc">RETAINER / HIGH VALUE</div>
+              </div>
+            </div>
+            <div class="role-item">
+              <div class="role-dot" style="background:#8891b0"></div>
+              <div>
+                <div class="role-name">ACTIVE CLIENT</div>
+                <div class="role-desc">CURRENT PROJECT</div>
+              </div>
+            </div>
+            <div class="role-item">
+              <div class="role-dot" style="background:#444860"></div>
+              <div>
+                <div class="role-name">PROSPECT</div>
+                <div class="role-desc">PRE-BRIEF INQUIRY</div>
+              </div>
+            </div>
+            <div class="role-item">
+              <div class="role-dot" style="background:#2a2d40"></div>
+              <div>
+                <div class="role-name">ALUMNI</div>
+                <div class="role-desc">COMPLETED PROJECTS</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-function placeFood() {
-  let pos;
-  do {
-    pos = {x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS)};
-  } while (snake.some(s => s.x === pos.x && s.y === pos.y));
-  food = pos;
-  food.color = Math.random() > 0.8 ? YELLOW : GREEN;
-  food.points = food.color === YELLOW ? 3 : 1;
-}
-
-function updateUI() {
-  scoreEl.textContent = score;
-  hiEl.textContent = hiScore;
-  levelEl.textContent = level;
-}
-
-function spawnParticles(x, y, color) {
-  for (let i = 0; i < 8; i++) {
-    const angle = (i / 8) * Math.PI * 2;
-    particles.push({
-      x: x * CELL + CELL / 2,
-      y: y * CELL + CELL / 2,
-      vx: Math.cos(angle) * (1 + Math.random() * 3),
-      vy: Math.sin(angle) * (1 + Math.random() * 3),
-      life: 1,
-      color
-    });
-  }
-}
-
-function step() {
-  dir = nextDir;
-  const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
-
-  // Wall collision
-  if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) {
-    endGame(); return;
-  }
-
-  // Self collision
-  if (snake.some(s => s.x === head.x && s.y === head.y)) {
-    endGame(); return;
-  }
-
-  snake.unshift(head);
-
-  if (head.x === food.x && head.y === food.y) {
-    const pts = food.points;
-    spawnParticles(food.x, food.y, food.color);
-    score += pts;
-    if (score > hiScore) hiScore = score;
-    level = Math.floor(score / 5) + 1;
-    speed = Math.max(60, 120 - (level - 1) * 8);
-    updateUI();
-    placeFood();
-    clearInterval(gameLoop);
-    gameLoop = setInterval(step, speed);
-  } else {
-    snake.pop();
-  }
-
-  draw();
-}
-
-function draw() {
-  // Background
-  ctx.fillStyle = '#020d04';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Grid dots
-  ctx.fillStyle = DIM;
-  for (let x = 0; x < COLS; x++) {
-    for (let y = 0; y < ROWS; y++) {
-      ctx.fillRect(x * CELL + CELL / 2 - 0.5, y * CELL + CELL / 2 - 0.5, 1, 1);
-    }
-  }
-
-  // Particles
-  particles = particles.filter(p => p.life > 0);
-  particles.forEach(p => {
-    ctx.save();
-    ctx.globalAlpha = p.life;
-    ctx.fillStyle = p.color;
-    ctx.fillRect(p.x - 2, p.y - 2, 4, 4);
-    ctx.restore();
-    p.x += p.vx;
-    p.y += p.vy;
-    p.life -= 0.06;
-  });
-
-  // Snake
-  snake.forEach((seg, i) => {
-    const isHead = i === 0;
-    const alpha = isHead ? 1 : Math.max(0.3, 1 - i * 0.03);
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    
-    if (isHead) {
-      ctx.fillStyle = GREEN;
-      ctx.shadowColor = GREEN;
-      ctx.shadowBlur = 12;
-    } else {
-      ctx.fillStyle = i % 2 === 0 ? MID : '#009922';
-      ctx.shadowColor = MID;
-      ctx.shadowBlur = 4;
-    }
-
-    const pad = isHead ? 1 : 2;
-    ctx.fillRect(seg.x * CELL + pad, seg.y * CELL + pad, CELL - pad * 2, CELL - pad * 2);
-    
-    // Head eyes
-    if (isHead) {
-      ctx.fillStyle = '#020d04';
-      ctx.shadowBlur = 0;
-      const ex = dir.x, ey = dir.y;
-      const cx = seg.x * CELL + CELL / 2;
-      const cy = seg.y * CELL + CELL / 2;
-      const ox = ey !== 0 ? 4 : 0, oy = ex !== 0 ? 4 : 0;
-      const fx = ex * 4, fy = ey * 4;
-      ctx.fillRect(cx + fx + ox - 2, cy + fy + oy - 2, 3, 3);
-      ctx.fillRect(cx + fx - ox - 2, cy + fy - oy - 2, 3, 3);
-    }
-    ctx.restore();
-  });
-
-  // Food
-  const fx = food.x * CELL + CELL / 2;
-  const fy = food.y * CELL + CELL / 2;
-  const pulse = Math.sin(Date.now() / 200) * 2;
-  ctx.save();
-  ctx.fillStyle = food.color;
-  ctx.shadowColor = food.color;
-  ctx.shadowBlur = 15 + pulse;
-  const r = 5 + pulse * 0.3;
-  ctx.beginPath();
-  ctx.arc(fx, fy, r, 0, Math.PI * 2);
-  ctx.fill();
-  if (food.points > 1) {
-    ctx.fillStyle = '#020d04';
-    ctx.shadowBlur = 0;
-    ctx.font = 'bold 8px Share Tech Mono';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('★', fx, fy);
-  }
-  ctx.restore();
-}
-
-function endGame() {
-  clearInterval(gameLoop);
-  state = 'dead';
-  overlayTitle.textContent = 'GAME OVER';
-  overlaySub.textContent = `SCORE: ${score}  |  HIGH: ${hiScore}`;
-  overlay.querySelector('.start-hint').textContent = '[ PRESS SPACE OR ENTER TO RESTART ]';
-  overlay.style.display = 'flex';
-}
-
-function startGame() {
-  init();
-  overlay.style.display = 'none';
-  state = 'playing';
-  clearInterval(gameLoop);
-  gameLoop = setInterval(step, speed);
-}
-
-function pauseGame() {
-  if (state === 'playing') {
-    clearInterval(gameLoop);
-    state = 'paused';
-    overlayTitle.textContent = 'PAUSED';
-    overlaySub.textContent = '';
-    overlay.querySelector('.start-hint').textContent = '[ PRESS SPACE TO CONTINUE ]';
-    overlay.style.display = 'flex';
-  } else if (state === 'paused') {
-    overlay.style.display = 'none';
-    state = 'playing';
-    gameLoop = setInterval(step, speed);
-  }
-}
-
-document.addEventListener('keydown', e => {
-  if (e.key === ' ' || e.key === 'Enter') {
-    if (state === 'start' || state === 'dead') startGame();
-    else if (state === 'playing' || state === 'paused') pauseGame();
-    e.preventDefault();
-  }
-  if (e.key === 'Escape') {
-    clearInterval(gameLoop);
-    state = 'start';
-    overlayTitle.textContent = 'SNAKE.EXE';
-    overlaySub.textContent = 'USE ARROW KEYS OR WASD TO MOVE';
-    overlay.querySelector('.start-hint').textContent = '[ PRESS SPACE OR ENTER TO START ]';
-    overlay.style.display = 'flex';
-  }
-  if (state !== 'playing') return;
-  const dirs = {
-    ArrowUp: {x:0,y:-1}, w: {x:0,y:-1},
-    ArrowDown: {x:0,y:1}, s: {x:0,y:1},
-    ArrowLeft: {x:-1,y:0}, a: {x:-1,y:0},
-    ArrowRight: {x:1,y:0}, d: {x:1,y:0},
-  };
-  const nd = dirs[e.key];
-  if (nd && !(nd.x === -dir.x && nd.y === -dir.y)) {
-    nextDir = nd;
-    e.preventDefault();
-  }
-});
-
-// Tap overlay to start/resume
-overlay.addEventListener('click', () => {
-  if (state === 'start' || state === 'dead') startGame();
-  else if (state === 'paused') pauseGame();
-});
-
-// D-pad buttons
-function pressDir(nd) {
-  if (state === 'start' || state === 'dead') startGame();
-  if (state !== 'playing') return;
-  if (!(nd.x === -dir.x && nd.y === -dir.y)) nextDir = nd;
-}
-
-const btnMap = {
-  'btn-up':    {x:0,y:-1},
-  'btn-down':  {x:0,y:1},
-  'btn-left':  {x:-1,y:0},
-  'btn-right': {x:1,y:0},
-};
-
-Object.entries(btnMap).forEach(([id, nd]) => {
-  const btn = document.getElementById(id);
-  btn.addEventListener('touchstart', e => { e.preventDefault(); pressDir(nd); }, {passive:false});
-  btn.addEventListener('mousedown', e => { e.preventDefault(); pressDir(nd); });
-});
-
-document.getElementById('btn-pause').addEventListener('touchstart', e => { e.preventDefault(); if (state === 'playing' || state === 'paused') pauseGame(); }, {passive:false});
-document.getElementById('btn-pause').addEventListener('mousedown', e => { e.preventDefault(); if (state === 'playing' || state === 'paused') pauseGame(); });
-
-// Animate food pulse even when paused
-function animLoop() {
-  if (state !== 'playing') draw();
-  requestAnimationFrame(animLoop);
-}
-
-state = 'start';
-init();
-draw();
-animLoop();
-</script>
-</body>
-</html>
+      <!-- Permissions -->
+      <div class="panel">
+        <div class="panel-header">// <span>CHANNEL PERMISSIONS MATRIX</span></div>
+        <table class="perms-table">
+          <tr>
+            <th>CHANNEL</th>
+            <th>KYRAX</th>
+            <th>ANU</th>
+            <th>STAFF</th>
+            <th>OPERATOR</th>
+            <th>CLIENT</th>
+            <th>PROSPECT</th>
+          </tr>
+          <tr>
+            <td class="channel-col"># command-room</td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-cross">\u2717</span></td>
+            <td><span class="perm-cross">\u2717</span></td>
+            <td><span class="perm-cross">\u2717</span></td>
+          </tr>
+          <tr>
+            <td class="channel-col"># pipeline-ops</td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-cross">\u2717</span></td>
+            <td><span class="perm-cross">\u2717</span></td>
+          </tr>
+          <tr>
+            <td class="channel-col"># active-projects</td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-cross">\u2717</span></td>
+            <td><span class="perm-cross">\u2717</span></td>
+          </tr>
+          <tr>
+            <td class="channel-col"># asset-drops</td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-cross">\u2717</span></td>
+            <td><span class="perm-cross">\u2717</span></td>
+          </tr>
+          <tr>
+            <td class="channel-col"># submit-brief</td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-check">\u2713</span></td>
+            <td><span class="perm-
